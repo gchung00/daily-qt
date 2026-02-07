@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar, BookOpen, Music } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { ParsedSermon } from '@/lib/parser';
+import FloatingBibleMenu from '@/components/FloatingBibleMenu';
 
 export const dynamic = 'force-dynamic';
 
@@ -90,7 +91,10 @@ export default async function SermonsListPage() {
                 )}
 
             </section>
-        </main>
+            </section>
+
+            <FloatingBibleMenu />
+        </main >
     );
 }
 

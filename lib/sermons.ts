@@ -32,3 +32,13 @@ export async function getLatestSermon(): Promise<ParsedSermon | null> {
     dates.sort((a, b) => b.localeCompare(a));
     return getSermon(dates[0]);
 }
+
+export async function getAllSermons(): Promise<ParsedSermon[]> {
+    const dates = await getSermonDates();
+    const sermons = await Promise.all(dates.map(date => getSermon(date)));
+
+    // Filter out nulls and sort by date descending
+    return sermons
+        .filter((s): s is ParsedSermon => s !== null)
+        .sort((a, b) => b.date.localeCompare(a.date));
+}

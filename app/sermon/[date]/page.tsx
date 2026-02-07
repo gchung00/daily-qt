@@ -24,9 +24,9 @@ export default async function SermonPage({ params }: Props) {
     return (
         <main className="min-h-screen bg-background pb-0">
             {/* 1. MAIN CONTENT (Wrapped for Lighter Background) */}
-            <section className="py-20 px-6 md:px-12 relative">
+            <section className="py-12 px-3 md:px-12 relative">
                 <div className="max-w-5xl mx-auto">
-                    <div className="mb-8 pl-4">
+                    <div className="mb-6 pl-2">
                         <Link href="/" className="inline-flex items-center text-primary/80 hover:text-primary font-bold transition-colors text-sm uppercase tracking-wider group">
                             <ArrowLeft className="mr-2 w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                             Main Page
@@ -34,7 +34,7 @@ export default async function SermonPage({ params }: Props) {
                     </div>
 
                     {/* Lighter Content Wrapper - #F5F4F1 */}
-                    <div className="bg-[#F5F4F1] rounded-[2.5rem] shadow-sm border border-card-border/60 p-4 sm:p-8">
+                    <div className="bg-[#F5F4F1] rounded-[2rem] shadow-sm border border-card-border/60 p-4 sm:p-10">
                         <SermonView sermon={sermon} />
                     </div>
                 </div>

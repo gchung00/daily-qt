@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { SermonStorage } from '@/lib/storage';
+import { revalidateTag } from 'next/cache';
 
 export const dynamic = 'force-dynamic'; // Prevent caching at the route level
 
@@ -31,6 +32,7 @@ export async function DELETE(request: Request) {
 
     try {
         await SermonStorage.deleteSermon(date);
+        revalidateTag('sermons'); // Invalidate cache
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error("DELETE Error:", error);
@@ -60,6 +62,7 @@ export async function POST(request: Request) {
             );
         }
 
+        revalidateTag('sermons'); // Invalidate cache
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error('Upload error:', error);

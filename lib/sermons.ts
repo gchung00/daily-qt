@@ -15,13 +15,25 @@ export async function getSermon(date: string): Promise<ParsedSermon | null> {
     }
 }
 
+import { unstable_cache } from 'next/cache';
+
+// Cached version of listing sermons to save Blob Ops
+// Revalidate tag: 'sermons'
+const getCachedSermonDates = unstable_cache(
+    async () => {
+        try {
+            return await SermonStorage.listSermons();
+        } catch (error) {
+            console.error('Error listing sermons:', error);
+            return [];
+        }
+    },
+    ['sermons-list'], // Key parts
+    { tags: ['sermons'], revalidate: 3600 } // Default revalidate 1 hour, but we will trigger on-demand
+);
+
 export async function getSermonDates(): Promise<string[]> {
-    try {
-        return await SermonStorage.listSermons();
-    } catch (error) {
-        console.error('Error listing sermons:', error);
-        return [];
-    }
+    return getCachedSermonDates();
 }
 
 export async function getLatestSermon(): Promise<ParsedSermon | null> {

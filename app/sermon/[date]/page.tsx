@@ -5,10 +5,8 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import SharedFooterWidgets from '@/components/SharedFooterWidgets';
 
-export async function generateStaticParams() {
-    const dates = await getSermonDates();
-    return dates.map((date) => ({ date }));
-}
+export const dynamic = 'force-dynamic';
+
 
 type Props = {
     params: Promise<{ date: string }>;

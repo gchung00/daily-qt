@@ -58,14 +58,22 @@ function SermonSectionComponent({ section }: { section: SermonSection }) {
 
         case 'prayer_title':
             return (
-                <p className="leading-8 mb-6 text-foreground/80 text-lg font-medium">{section.content}</p>
+                <div className="mt-16 mb-6">
+                    <h3 className="text-xl font-bold text-primary flex items-center gap-2">
+                        <span className="w-1 h-6 bg-primary rounded-full inline-block"></span>
+                        {section.content}
+                    </h3>
+                </div>
             );
 
         case 'prayer_item':
             return (
-                <p className="leading-8 mb-6 text-foreground/80 text-lg font-medium">
-                    {section.number}. {section.content}
-                </p>
+                <div className="flex gap-4 mb-4 pl-4 group">
+                    <span className="font-bold text-primary/60 text-lg w-6 shrink-0 text-right group-hover:text-primary transition-colors font-serif">{section.number}.</span>
+                    <p className="text-lg text-foreground/90 leading-relaxed font-medium">
+                        {section.content}
+                    </p>
+                </div>
             );
 
         case 'scripture_main':

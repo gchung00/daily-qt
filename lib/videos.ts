@@ -1,0 +1,9 @@
+export const FEATURED_VIDEO_IDS = [
+    'cZW3Ouwywag',
+    'XhuMt6HlKG4',
+    'eASV6ZAv11I',
+    'JMkW4jkQ1NY',
+    '8L6RA87Rmdk',
+    '2LRL6ZKxNjA',
+    'k8qwRIDanTs' // New video added
+];

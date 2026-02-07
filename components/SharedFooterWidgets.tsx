@@ -44,7 +44,7 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
     return (
         <>
             {/* 2. CALENDAR SECTION */}
-            <section className="py-12 md:py-24 px-6 bg-secondary/30 mt-8 md:mt-20 border-t border-card-border">
+            <section id="calendar" className="py-12 md:py-24 px-6 bg-secondary/30 mt-8 md:mt-20 border-t border-card-border">
                 <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>
                         <span className="text-secondary-foreground/60 text-xs font-bold tracking-[0.2em] uppercase mb-4 block">Archive</span>

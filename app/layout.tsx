@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 };
 
 import { AuthProvider } from "@/components/AuthProvider";
+import FloatingNav from "@/components/FloatingNav";
 
 export default function RootLayout({
   children,
@@ -33,6 +34,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           {children}
+          <FloatingNav />
         </AuthProvider>
       </body>
     </html>

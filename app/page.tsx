@@ -11,15 +11,15 @@ export default async function Home() {
   const latestSermon = await getLatestSermon();
 
   return (
-    <main className="min-h-screen font-sans selection:bg-accent selection:text-white pb-0">
+    <main className="min-h-screen font-sans selection:bg-accent selection:text-white pb-0 bg-white sm:bg-background">
       <TimeHeader />
 
       {/* 1. MAIN CONTENT: LATEST SERMON */}
       {/* Increased spacing and slightly darker background */}
-      <section className="py-12 px-6 md:px-12 relative">
+      <section className="py-12 px-4 md:px-12 relative">
         <div className="max-w-5xl mx-auto">
-          {/* Lighter Content Wrapper - #F5F4F1 */}
-          <div className="bg-[#F5F4F1] rounded-[2.5rem] shadow-sm border border-card-border/60 p-4 sm:p-8">
+          {/* Lighter Content Wrapper - #F5F4F1 (Only on SM up) */}
+          <div className="sm:bg-[#F5F4F1] sm:rounded-[2.5rem] sm:shadow-sm sm:border sm:border-card-border/60 py-6 sm:p-8">
             {latestSermon ? (
               <SermonView sermon={latestSermon} />
             ) : (

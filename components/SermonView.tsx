@@ -59,9 +59,9 @@ function SermonSectionComponent({ section }: { section: SermonSection }) {
         case 'prayer_title':
             return (
                 <div className="mt-16 mb-6">
-                    <h3 className="text-xl font-bold text-primary flex items-center gap-2">
-                        <span className="w-1 h-6 bg-primary rounded-full inline-block"></span>
-                        {section.content}
+                    <h3 className="text-xl font-bold text-primary flex gap-3">
+                        <span className="w-1.5 shrink-0 rounded-full bg-[#f37021]"></span>
+                        <span className="py-1">{section.content}</span>
                     </h3>
                 </div>
             );

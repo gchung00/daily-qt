@@ -16,14 +16,12 @@ export default function FloatingNav() {
         setIsOpen(false);
     };
 
-    // Calendar Navigation
+    // Calendar Navigation (Smart Scroll)
     const handleCalendar = (e: React.MouseEvent) => {
-        if (pathname === "/") {
+        const element = document.getElementById("calendar");
+        if (element) {
             e.preventDefault();
-            const element = document.getElementById("calendar");
-            if (element) {
-                element.scrollIntoView({ behavior: "smooth" });
-            }
+            element.scrollIntoView({ behavior: "smooth" });
         }
         setIsOpen(false);
     };

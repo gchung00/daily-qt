@@ -30,14 +30,14 @@ const SECTIONS = [
         text: (
             <>
                 <h2 className="text-3xl font-bold font-serif mb-6 leading-tight text-foreground">
-                    <span className="text-primary block text-lg font-sans font-bold tracking-widest uppercase mb-2">Based in Las Palmas</span>
-                    다문화 공동체로<br />성장하다
+                    <span className="text-primary block text-lg font-sans font-bold tracking-widest uppercase mb-2">Foundations</span>
+                    사역의 시작과 훈련
                 </h2>
                 <p className="text-lg text-foreground/80 leading-relaxed font-medium mb-6">
-                    1988년 영산신학원(현 한세대학교)을 졸업한 그는 여의도순복음교회에서 대교구장과 교무기획부장 등을 역임하며 목회와 행정 전반에서 경험을 쌓았습니다. 이후 1999년 스페인 라스팔마스로 부임해 본격적인 해외 선교의 길에 들어섰고, 약 30년에 걸쳐 현지 교회와 선교 현장을 지켜왔습니다.
+                    1988년 영산신학원(현 한세대학교)을 졸업한 그는 여의도순복음교회에서 대교구장과 교무기획부장 등을 역임하며 목회와 행정 전반에서 탄탄한 경험을 쌓았습니다.
                 </p>
                 <p className="text-lg text-foreground/80 leading-relaxed font-medium">
-                    라스팔마스 순복음교회는 한국인, 스페인인, 아프리카인, 중국인, 그리고 전 세계를 오가는 선원들이 함께 예배하는 다문화 공동체로 성장했습니다. 정 목사는 이 교회를 통해 선원 선교, 방송 선교, 노방 전도, 새신자 정착 사역을 꾸준히 이어가며 “기도와 말씀에 충실할 때 교회는 자연스럽게 세워진다”는 목회 철학을 현장에서 실천해 왔습니다.
+                    이후 1999년 스페인 라스팔마스로 부임해 본격적인 해외 선교의 길에 들어섰고, 약 30년에 걸쳐 현지 교회와 선교 현장을 묵묵히 지켜왔습니다.
                 </p>
             </>
         )
@@ -48,27 +48,45 @@ const SECTIONS = [
         text: (
             <>
                 <h2 className="text-3xl font-bold font-serif mb-6 leading-tight text-foreground">
-                    <span className="text-primary block text-lg font-sans font-bold tracking-widest uppercase mb-2">Mission Philosophy</span>
-                    사람을 세우는 선교
+                    <span className="text-primary block text-lg font-sans font-bold tracking-widest uppercase mb-2">Based in Las Palmas</span>
+                    다문화 공동체로<br />성장하다
                 </h2>
                 <p className="text-lg text-foreground/80 leading-relaxed font-medium mb-6">
-                    그의 사역에서 특히 두드러지는 특징은 현지인 사역자를 세우는 선교였습니다. 건물이나 단기 프로젝트 중심의 선교를 넘어, 성령 충만하고 헌신적인 현지 지도자를 훈련하고 이양함으로써 자생적인 교회가 세워지도록 힘써왔습니다.
+                    라스팔마스 순복음교회는 한국인, 스페인인, 아프리카인, 중국인, 그리고 전 세계를 오가는 선원들이 함께 예배하는 다문화 공동체로 성장했습니다.
                 </p>
-                <p className="text-lg text-foreground/80 leading-relaxed font-medium mb-6">
-                    아프리카 여러 국가에서 제자훈련과 성경교육, 교회 개척을 진행하는 한편, 학교·보건소 설립, 기술 교육, 자립 프로젝트 등 삶의 현장을 회복하는 사역도 함께 감당했습니다.
+                <p className="text-lg text-foreground/80 leading-relaxed font-medium">
+                    정 목사는 이 교회를 통해 선원 선교, 방송 선교, 노방 전도, 새신자 정착 사역을 꾸준히 이어가며 “기도와 말씀에 충실할 때 교회는 자연스럽게 세워진다”는 목회 철학을 현장에서 실천해 왔습니다.
                 </p>
-                <div className="bg-white/50 border-l-4 border-primary p-6 rounded-r-lg backdrop-blur-sm">
-                    <p className="italic font-serif text-foreground">
-                        "코로나19 팬데믹과 같은 어려운 시기에도 선교는 멈추지 않아야 한다.<br />
-                        복음이 말이 아니라 삶으로 전해지도록..."
-                    </p>
-                </div>
             </>
         )
     },
     {
         id: 4,
         image: '/profile-004.jpg',
+        text: (
+            <>
+                <h2 className="text-3xl font-bold font-serif mb-6 leading-tight text-foreground">
+                    <span className="text-primary block text-lg font-sans font-bold tracking-widest uppercase mb-2">Mission Philosophy</span>
+                    사람을 세우는 선교
+                </h2>
+                <p className="text-lg text-foreground/80 leading-relaxed font-medium mb-6">
+                    그의 사역에서 특히 두드러지는 특징은 현지인 사역자를 세우는 선교였습니다. 건물이나 단기 프로젝트 중심의 선교를 넘어, 성령 충만하고 헌신적인 현지 지도자를 훈련하고 이양함으로써 자생적인 교회가 세워지도록 힘써왔습니다.
+                </p>
+                <div className="bg-white/50 border-l-4 border-primary p-6 rounded-r-lg backdrop-blur-sm shadow-sm my-6">
+                    <p className="italic font-serif text-foreground">
+                        "코로나19 팬데믹과 같은 어려운 시기에도 선교는 멈추지 않아야 한다.<br />
+                        복음이 말이 아니라 삶으로 전해지도록..."
+                    </p>
+                </div>
+                <p className="text-lg text-foreground/80 leading-relaxed font-medium">
+                    아프리카 여러 국가에서 제자훈련과 성경교육, 교회 개척을 진행하는 한편, 학교·보건소 설립, 기술 교육 등 삶의 현장을 회복하는 사역도 함께 감당했습니다.
+                </p>
+            </>
+        )
+    },
+    {
+        id: 5,
+        image: '/profile-005.jpg',
         text: (
             <>
                 <h2 className="text-3xl font-bold font-serif mb-6 leading-tight text-foreground">
@@ -133,17 +151,17 @@ export default function ProfilePage() {
     return (
         <main className="min-h-screen bg-background font-sans text-foreground">
 
-            {/* STICKY IMAGE CONTAINER */}
-            <div className="fixed inset-0 z-0 h-screen w-full md:w-1/2 md:right-auto md:left-0 overflow-hidden bg-black/10">
+            {/* STICKY BACKGROUND IMAGE CONTAINER (Full Screen) */}
+            <div className="fixed inset-0 z-0 overflow-hidden bg-black/80">
                 {SECTIONS.map((section, index) => (
                     <div
                         key={section.id}
                         className={cn(
                             "absolute inset-0 transition-opacity duration-1000 ease-in-out",
-                            activeSection === index ? "opacity-100" : "opacity-0"
+                            activeSection === index ? "opacity-60" : "opacity-0"
                         )}
                     >
-                        <div className="absolute inset-0 bg-black/20" /> {/* Dimmer overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" /> {/* Left Gradient for depth */}
                         <img
                             src={section.image}
                             alt={`Profile ${index + 1}`}
@@ -158,68 +176,79 @@ export default function ProfilePage() {
             </div>
 
             {/* SCROLLING CONTENT CONTAINER */}
-            <div className="relative z-10 w-full md:w-1/2 md:ml-auto bg-white/90 md:bg-white/95 backdrop-blur-sm md:backdrop-blur-none min-h-screen">
-                {/* Header / Nav */}
-                <div className="fixed top-0 right-0 w-full md:w-1/2 z-20 p-6 bg-white/80 backdrop-blur-md border-b border-black/5 md:border-none md:bg-transparent">
-                    <Link href="/" className="inline-flex items-center text-muted hover:text-primary transition-colors font-medium text-sm uppercase tracking-wider group">
+            <div className="relative z-10 min-h-screen flex flex-col items-end">
+
+                {/* Header / Nav (Floating) */}
+                <div className="fixed top-0 right-0 w-full z-20 p-6 flex justify-end pointer-events-none">
+                    <Link href="/" className="pointer-events-auto inline-flex items-center text-white/80 hover:text-white bg-black/20 hover:bg-black/40 backdrop-blur-md px-4 py-2 rounded-full transition-all font-medium text-sm uppercase tracking-wider group border border-white/10">
                         <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Home
                     </Link>
                 </div>
 
-                {/* Profile Title (Initial) */}
-                <div className="pt-32 pb-10 px-8 md:px-16">
-                    <h1 className="text-5xl font-black text-foreground mb-4 serif-emphasis leading-tight">
-                        정병성 목사
-                    </h1>
-                    <p className="text-primary text-xl font-bold tracking-[0.2em] uppercase">
-                        Pastor Profile
-                    </p>
-                </div>
+                {/* THE SIDEBAR / CONTENT PANEL */}
+                {/* 
+                    Responsive Design:
+                    - Mobile (< md): w-full, bg-white/95 (almost opaque), slide up
+                    - Tablet (md): w-[60%] or [70%], keeping image visible on left
+                    - Desktop (lg): w-[50%] or [45%], comfortable split
+                    - Added shadow and blur to soften the edge boundary
+                */}
+                <div className="w-full md:w-[65%] lg:w-[50%] bg-white/90 backdrop-blur-xl shadow-[-20px_0_60px_rgba(0,0,0,0.15)] min-h-screen border-l border-white/20 transition-[width] duration-300">
 
-                {/* Scrollytelling Sections */}
-                <div className="pb-20">
-                    {SECTIONS.map((section, index) => (
-                        <div
-                            key={section.id}
-                            data-index={index}
-                            ref={(el) => { observerRefs.current[index] = el; }}
-                            className="min-h-[80vh] flex flex-col justify-center px-8 md:px-16 py-20 border-l border-black/5"
-                        >
-                            {section.text}
-                        </div>
-                    ))}
-                </div>
-
-                {/* Video Section (Footer) */}
-                <section className="px-8 md:px-16 py-20 bg-secondary/20 border-t border-black/5">
-                    <h2 className="text-2xl font-bold text-foreground mb-8 flex items-center gap-3 serif-emphasis">
-                        <span className="w-8 h-1 bg-primary rounded-full"></span>
-                        설교 영상
-                    </h2>
-                    <div className="w-full aspect-video rounded-xl overflow-hidden shadow-2xl bg-black ring-1 ring-black/10">
-                        {featuredVideo && (
-                            <iframe
-                                width="100%"
-                                height="100%"
-                                src={`https://www.youtube.com/embed/${featuredVideo}`}
-                                title="Featured Sermon"
-                                frameBorder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                className="w-full h-full"
-                            ></iframe>
-                        )}
+                    {/* Profile Title (Initial) */}
+                    <div className="pt-32 pb-4 px-8 md:px-16">
+                        <h1 className="text-5xl font-black text-foreground mb-4 serif-emphasis leading-tight">
+                            정병성 목사
+                        </h1>
+                        <p className="text-primary text-xl font-bold tracking-[0.2em] uppercase">
+                            Pastor Profile
+                        </p>
                     </div>
-                    <p className="text-center text-sm text-muted mt-4 font-medium">
-                        * 추천 설교 영상 (새로고침 시 변경됩니다)
-                    </p>
-                </section>
 
-                <footer className="py-8 text-center text-sm text-muted/60">
-                    &copy; 2026 Pastor Byung-Sung Jung. All rights reserved.
-                </footer>
+                    {/* Scrollytelling Sections */}
+                    <div className="pb-20">
+                        {SECTIONS.map((section, index) => (
+                            <div
+                                key={section.id}
+                                data-index={index}
+                                ref={(el) => { observerRefs.current[index] = el; }}
+                                className="min-h-[80vh] flex flex-col justify-center px-8 md:px-16 py-20 border-l-2 border-transparent"
+                            >
+                                {section.text}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Video Section (Footer) */}
+                    <section className="px-8 md:px-16 py-24 bg-secondary/30 mt-auto border-t border-black/5">
+                        <h2 className="text-2xl font-bold text-foreground mb-8 flex items-center gap-3 serif-emphasis">
+                            <span className="w-8 h-1 bg-primary rounded-full"></span>
+                            설교 영상
+                        </h2>
+                        <div className="w-full aspect-video rounded-xl overflow-hidden shadow-2xl bg-black ring-1 ring-black/10">
+                            {featuredVideo && (
+                                <iframe
+                                    width="100%"
+                                    height="100%"
+                                    src={`https://www.youtube.com/embed/${featuredVideo}`}
+                                    title="Featured Sermon"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    className="w-full h-full"
+                                ></iframe>
+                            )}
+                        </div>
+                        <p className="text-center text-sm text-muted mt-4 font-medium">
+                            * 추천 설교 영상 (새로고침 시 변경됩니다)
+                        </p>
+
+                        <footer className="mt-16 pt-8 border-t border-black/5 text-center text-sm text-muted/60">
+                            &copy; 2026 Chung. All rights reserved.
+                        </footer>
+                    </section>
+                </div>
             </div>
         </main>
     );
 }
-

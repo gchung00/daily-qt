@@ -81,8 +81,40 @@ export const BIBLE_BOOKS_DATA: BibleBook[] = [
 export function getBookFromReference(reference: string): BibleBook | null {
     if (!reference) return null;
 
-    // Find matching book abbreviation at the start of the reference string
-    // Sort by length desc to match '삼상' before '삼' (though '삼' isn't a book, just safety)
-    const book = BIBLE_BOOKS_DATA.find(b => reference.startsWith(b.abbrev));
+    const book = BIBLE_BOOKS_DATA.find(b => reference.startsWith(b.abbrev) || reference.startsWith(b.name));
     return book || null;
+}
+
+export function parseScriptureReference(reference: string): { bookId: string; chapter: number; verse: number } | null {
+    if (!reference) return null;
+
+    const book = getBookFromReference(reference);
+    if (!book) return null;
+
+    // Remove book name/abbrev from reference to parse numbers
+    // e.g., "창1:1" -> "1:1", "창세기 1:1" -> " 1:1"
+    let remain = reference.replace(book.name, '').replace(book.abbrev, '').trim();
+
+    // Match Chapter:Verse
+    // Supports 1:1, 1:1-5, etc. We only care about start verse for sorting.
+    const match = remain.match(/(\d+):(\d+)/);
+    if (match) {
+        return {
+            bookId: book.id,
+            chapter: parseInt(match[1], 10),
+            verse: parseInt(match[2], 10)
+        };
+    }
+
+    // Fallback: simple chapter match if no verse (unlikely but good for safety)
+    const chapMatch = remain.match(/(\d+)/);
+    if (chapMatch) {
+        return {
+            bookId: book.id,
+            chapter: parseInt(chapMatch[1], 10),
+            verse: 0
+        };
+    }
+
+    return { bookId: book.id, chapter: 0, verse: 0 };
 }

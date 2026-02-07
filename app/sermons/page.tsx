@@ -1,5 +1,5 @@
 import { getAllSermons } from '@/lib/sermons';
-import { getBookFromReference, BIBLE_BOOKS_DATA, BibleBook } from '@/lib/bible';
+import { getBookFromReference, BIBLE_BOOKS_DATA, BibleBook, parseScriptureReference } from '@/lib/bible';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, BookOpen, Music } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
@@ -95,14 +95,30 @@ export default async function SermonsListPage() {
 }
 
 function BookSection({ book, sermons }: { book: BibleBook, sermons: ParsedSermon[] }) {
+    // Sort sermons by Chapter and Verse
+    const sortedSermons = [...sermons].sort((a, b) => {
+        const refA = (a.sections.find(s => s.type === 'scripture_main') as any)?.reference || '';
+        const refB = (b.sections.find(s => s.type === 'scripture_main') as any)?.reference || '';
+
+        const parsedA = parseScriptureReference(refA);
+        const parsedB = parseScriptureReference(refB);
+
+        if (!parsedA || !parsedB) return 0;
+
+        if (parsedA.chapter !== parsedB.chapter) {
+            return parsedA.chapter - parsedB.chapter;
+        }
+        return parsedA.verse - parsedB.verse;
+    });
+
     return (
         <div className="scroll-mt-20" id={book.id}>
             <div className="flex items-baseline gap-3 mb-6">
                 <h3 className="text-2xl font-bold text-foreground">{book.name}</h3>
-                <span className="text-sm font-bold text-primary/60 bg-secondary/30 px-2 py-0.5 rounded-full">{sermons.length}</span>
+                <span className="text-sm font-bold text-primary/60 bg-secondary/30 px-2 py-0.5 rounded-full">{sortedSermons.length}</span>
             </div>
             <div className="grid gap-4">
-                {sermons.map(sermon => (
+                {sortedSermons.map(sermon => (
                     <SermonCard key={sermon.date} sermon={sermon} />
                 ))}
             </div>
@@ -119,20 +135,22 @@ function SermonCard({ sermon }: { sermon: ParsedSermon }) {
             className="group block bg-white rounded-xl border border-card-border/60 p-5 hover:shadow-md hover:border-primary/40 transition-all duration-200"
         >
             <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-6 justify-between">
-                <div>
-                    <h4 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors serif-emphasis">
-                        {sermon.title || `${sermon.date} 주일 예배`}
+                <div className="flex-1 min-w-0">
+                    <h4 className="text-xl font-bold text-primary mb-1 group-hover:text-primary/80 transition-colors serif-emphasis truncate">
+                        {mainScripture?.reference || sermon.title || '말씀'}
                     </h4>
-                    {mainScripture && (
-                        <p className="text-sm text-muted mt-1 text-pretty">
-                            <span className="font-bold text-primary/80 mr-2">{mainScripture.reference}</span>
-                            {mainScripture.text && <span className="opacity-70 line-clamp-1 sm:inline hidden"> - {mainScripture.text.substring(0, 40)}...</span>}
+
+                    {mainScripture?.text && (
+                        <p className="text-muted/80 text-sm line-clamp-1 mb-2">
+                            {mainScripture.text}
                         </p>
                     )}
-                </div>
-                <div className="shrink-0 flex items-center gap-2 text-xs font-bold text-muted/50 uppercase tracking-wider">
-                    <Calendar className="w-3 h-3" />
-                    {format(parseISO(sermon.date), 'yyyy. MM. dd', { locale: ko })}
+
+                    <div className="flex items-center gap-2 text-xs font-bold text-muted/50 uppercase tracking-wider">
+                        <Calendar className="w-3 h-3" />
+                        {/* Year IS included in yyyy. MM. dd */}
+                        {format(parseISO(sermon.date), 'yyyy. MM. dd', { locale: ko })} 예배
+                    </div>
                 </div>
             </div>
         </Link>

@@ -91,10 +91,9 @@ export default async function SermonsListPage() {
                 )}
 
             </section>
-            </section>
 
             <FloatingBibleMenu />
-        </main >
+        </main>
     );
 }
 

@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 
-const SECTIONS = [
+const BASE_SECTIONS = [
     {
         id: 1,
         image: '/profile-001.jpg',
@@ -124,7 +124,51 @@ export default function ProfilePage() {
     useEffect(() => {
         // Random video
         setFeaturedVideo(VIDEO_IDS[Math.floor(Math.random() * VIDEO_IDS.length)]);
+    }, []);
 
+    // Combine Base Sections with Dynamic Video Section
+    const allSections = useMemo(() => [
+        ...BASE_SECTIONS,
+        {
+            id: 6,
+            image: '/profile_background.png',
+            text: (
+                <>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-3 font-serif">
+                        <span className="w-8 h-1 bg-primary rounded-full"></span>
+                        설교 영상
+                    </h2>
+
+                    <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-xl bg-black ring-1 ring-black/10 mb-6">
+                        {featuredVideo ? (
+                            <iframe
+                                width="100%"
+                                height="100%"
+                                src={`https://www.youtube.com/embed/${featuredVideo}`}
+                                title="Featured Sermon"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                                className="w-full h-full"
+                            ></iframe>
+                        ) : (
+                            <div className="w-full h-full bg-gray-200 animate-pulse" />
+                        )}
+                    </div>
+
+                    <p className="text-center text-sm text-gray-500 font-medium mb-12">
+                        * 추천 설교 영상 (새로고침 시 변경됩니다)
+                    </p>
+
+                    <footer className="pt-8 border-t border-gray-200 text-center text-sm text-gray-400">
+                        &copy; 2026 Chung. All rights reserved.
+                    </footer>
+                </>
+            )
+        }
+    ], [featuredVideo]);
+
+    useEffect(() => {
         // Intersection Observer for Scrollytelling
         const observer = new IntersectionObserver(
             (entries) => {
@@ -141,19 +185,19 @@ export default function ProfilePage() {
             }
         );
 
-        observerRefs.current.forEach((ref) => {
+        observerRefs.current.slice(0, allSections.length).forEach((ref) => {
             if (ref) observer.observe(ref);
         });
 
         return () => observer.disconnect();
-    }, []);
+    }, [allSections]);
 
     return (
         <main className="min-h-screen font-sans bg-black text-foreground">
 
             {/* STICKY BACKGROUND IMAGE CONTAINER (Full Screen) */}
             <div className="fixed inset-0 z-0 w-full h-full overflow-hidden">
-                {SECTIONS.map((section, index) => (
+                {allSections.map((section, index) => (
                     <div
                         key={section.id}
                         className={cn(
@@ -173,7 +217,7 @@ export default function ProfilePage() {
                             }}
                             onError={(e) => {
                                 // Fallback just in case
-                                e.currentTarget.src = '/pastor-profile.jpg';
+                                e.currentTarget.style.display = 'none'; // Hide if failed
                             }}
                         />
                     </div>
@@ -205,7 +249,7 @@ export default function ProfilePage() {
 
                 {/* Content Cards */}
                 <div className="flex flex-col items-center md:items-end w-full max-w-7xl mx-auto gap-[40vh] md:pb-[20vh]"> {/* Huge gap for scroll effect */}
-                    {SECTIONS.map((section, index) => (
+                    {allSections.map((section, index) => (
                         <div
                             key={section.id}
                             data-index={index}
@@ -215,37 +259,6 @@ export default function ProfilePage() {
                             {section.text}
                         </div>
                     ))}
-
-                    {/* Final Card: Video & Footer */}
-                    <div className="w-full max-w-xl lg:max-w-2xl bg-white/90 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/50 md:mr-[5vw] lg:mr-[8vw]">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-3 font-serif">
-                            <span className="w-8 h-1 bg-primary rounded-full"></span>
-                            설교 영상
-                        </h2>
-
-                        <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-xl bg-black ring-1 ring-black/10 mb-6">
-                            {featuredVideo && (
-                                <iframe
-                                    width="100%"
-                                    height="100%"
-                                    src={`https://www.youtube.com/embed/${featuredVideo}`}
-                                    title="Featured Sermon"
-                                    frameBorder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                    className="w-full h-full"
-                                ></iframe>
-                            )}
-                        </div>
-
-                        <p className="text-center text-sm text-gray-500 font-medium mb-12">
-                            * 추천 설교 영상 (새로고침 시 변경됩니다)
-                        </p>
-
-                        <footer className="pt-8 border-t border-gray-200 text-center text-sm text-gray-400">
-                            &copy; 2026 Chung. All rights reserved.
-                        </footer>
-                    </div>
                 </div>
 
                 {/* Bottom Spacer */}

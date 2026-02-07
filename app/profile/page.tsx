@@ -152,20 +152,22 @@ export default function ProfilePage() {
         <main className="min-h-screen bg-background font-sans text-foreground">
 
             {/* STICKY BACKGROUND IMAGE CONTAINER (Full Screen) */}
-            <div className="fixed inset-0 z-0 overflow-hidden bg-black/80">
+            <div className="fixed inset-0 z-0 overflow-hidden bg-neutral-900">
                 {SECTIONS.map((section, index) => (
                     <div
                         key={section.id}
                         className={cn(
-                            "absolute inset-0 transition-opacity duration-1000 ease-in-out",
-                            activeSection === index ? "opacity-60" : "opacity-0"
+                            "absolute inset-0 transition-opacity duration-1000 ease-in-out flex items-center justify-center md:items-start md:justify-start",
+                            activeSection === index ? "opacity-100" : "opacity-0"
                         )}
                     >
-                        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" /> {/* Left Gradient for depth */}
+                        {/* Use object-contain to prevent zoom/crop, centered on bg-neutral-900 */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent z-10 pointer-events-none" /> {/* Overlay for text readability */}
                         <img
                             src={section.image}
                             alt={`Profile ${index + 1}`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain md:object-cover md:object-left-top opacity-80" // Mobile: Contain (full image), Desktop: Cover (fill space) but stick to left-top
+                            style={{ objectPosition: "center top" }} // Anchor image to top center to show faces usually
                             onError={(e) => {
                                 // Fallback just in case
                                 e.currentTarget.src = '/pastor-profile.jpg';
@@ -193,7 +195,7 @@ export default function ProfilePage() {
                     - Desktop (lg): w-[50%] or [45%], comfortable split
                     - Added shadow and blur to soften the edge boundary
                 */}
-                <div className="w-full md:w-[65%] lg:w-[50%] bg-white/90 backdrop-blur-xl shadow-[-20px_0_60px_rgba(0,0,0,0.15)] min-h-screen border-l border-white/20 transition-[width] duration-300">
+                <div className="w-full md:w-[75%] lg:w-[60%] bg-white/90 backdrop-blur-xl shadow-[-20px_0_60px_rgba(0,0,0,0.15)] min-h-screen border-l border-white/20 transition-[width] duration-300">
 
                     {/* Profile Title (Initial) */}
                     <div className="pt-32 pb-4 px-8 md:px-16">

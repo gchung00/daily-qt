@@ -92,7 +92,7 @@ export default async function SermonsListPage() {
 
             </section>
 
-            <FloatingBibleMenu />
+            <FloatingBibleMenu availableBookIds={Array.from(groupedSermons.keys())} />
         </main>
     );
 }

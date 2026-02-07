@@ -22,7 +22,7 @@ export default async function SermonPage({ params }: Props) {
     }
 
     return (
-        <main className="min-h-screen bg-background pb-0">
+        <main className="min-h-screen bg-white sm:bg-background pb-0">
             {/* 1. MAIN CONTENT (Wrapped for Lighter Background) */}
             <section className="py-12 px-4 md:px-12 relative">
                 <div className="max-w-5xl mx-auto">

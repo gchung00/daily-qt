@@ -71,9 +71,9 @@ export const BIBLE_BOOKS_DATA: BibleBook[] = [
     { id: 'Jam', name: '야고보서', abbrev: '약', testament: 'NT' },
     { id: '1Pe', name: '베드로전서', abbrev: '벧전', testament: 'NT' },
     { id: '2Pe', name: '베드로후서', abbrev: '벧후', testament: 'NT' },
-    { id: '1Jo', name: '요한1서', abbrev: '요일', testament: 'NT' },
-    { id: '2Jo', name: '요한2서', abbrev: '요이', testament: 'NT' },
-    { id: '3Jo', name: '요한3서', abbrev: '요삼', testament: 'NT' },
+    { id: '1Jo', name: '요한1서', abbrev: '요1', testament: 'NT' },
+    { id: '2Jo', name: '요한2서', abbrev: '요2', testament: 'NT' },
+    { id: '3Jo', name: '요한3서', abbrev: '요3', testament: 'NT' },
     { id: 'Jud', name: '유다서', abbrev: '유', testament: 'NT' },
     { id: 'Rev', name: '요한계시록', abbrev: '계', testament: 'NT' },
 ];

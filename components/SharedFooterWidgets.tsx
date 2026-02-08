@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Mail, MapPin, User } from 'lucide-react';
+import { Mail, MapPin, User, Play } from 'lucide-react';
 import ClientCalendarWrapper from '@/components/ClientCalendarWrapper';
 import { useEffect, useRef, useState } from 'react';
 
@@ -44,10 +44,17 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
                             지나간 날의 말씀을 다시 묵상하며 은혜를 나누세요.
                             날짜를 선택하면 해당 날짜의 설교로 이동합니다.
                         </p>
-                        <Link href="/sermons" className="inline-flex items-center text-primary font-bold hover:text-primary/80 transition-colors group">
-                            전체 목록 보기
-                            <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
-                        </Link>
+                        <div className="flex flex-col gap-4 items-start">
+                            <Link href="/sermons" className="inline-flex items-center text-primary font-bold hover:text-primary/80 transition-colors group">
+                                전체 목록 보기
+                                <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                            </Link>
+
+                            <Link href="/youtube" className="inline-flex items-center text-red-600 font-bold hover:text-red-700 transition-colors group">
+                                설교 비디오
+                                <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                            </Link>
+                        </div>
                     </div>
 
                     <div className="flex justify-center lg:justify-end">

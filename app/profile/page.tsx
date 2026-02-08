@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Play } from 'lucide-react';
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -156,9 +156,16 @@ export default function ProfilePage() {
                         )}
                     </div>
 
-                    <p className="text-center text-sm text-gray-500 font-medium mb-12">
+                    <p className="text-center text-sm text-gray-500 font-medium mb-8">
                         * 추천 설교 영상 (새로고침 시 변경됩니다)
                     </p>
+
+                    <div className="flex justify-center mb-12">
+                        <Link href="/youtube" className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-full font-bold hover:bg-red-700 transition-colors shadow-lg shadow-red-600/20 group">
+                            <Play className="w-4 h-4 fill-current" />
+                            <span>설교 비디오</span>
+                        </Link>
+                    </div>
 
                     <footer className="pt-8 border-t border-gray-200 text-center text-sm text-gray-400">
                         &copy; 2026 Chung. All rights reserved.

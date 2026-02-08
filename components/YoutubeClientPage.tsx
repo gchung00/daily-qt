@@ -33,18 +33,11 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
     const currentVideo = videos[currentIndex];
 
     // Handle video end / auto-next
-    // Note: Reliable "Auto Next" with pure iframe requires YouTube API or postMessage listening.
-    // For now, we'll implement the UI and basic iframe autoplay.
-    // To truly detect "End", we'd need to listen to window 'message' events from the iframe.
     useEffect(() => {
         const handleMessage = (event: MessageEvent) => {
-            // Very basic check for YouTube postMessages (infoDelivery)
             if (event.origin.includes('youtube.com')) {
                 try {
                     const data = JSON.parse(event.data);
-                    // YouTube API 'onStateChange' is mostly hidden in post messages for iframes unless enablejsapi=1
-                    // Implementing full auto-next via pure iframe messages is flaky. 
-                    // We will trust the user's manual navigation for now or minimal support.
                 } catch (e) { }
             }
         };
@@ -76,13 +69,7 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
                 <div className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-160px)] min-h-[600px]">
 
                     {/* LEFT: Main Player (Flex Grow) */}
-                    {/* We want this to take up available space. */}
                     <div className="lg:flex-[3] flex flex-col h-full">
-                        {/* Video Player Wrapper - Flex 1 to fill height, but keep aspect ratio? 
-                            Actually, standard YouTube style: Video is large, list is next to it.
-                            We'll let the video define the height naturally by aspect ratio, 
-                            and force the list to match it OR fill the screen.
-                        */}
                         <div className="w-full bg-black rounded-2xl overflow-hidden shadow-2xl flex-shrink-0 relative" style={{ aspectRatio: '16/9' }}>
                             <iframe
                                 src={`https://www.youtube.com/embed/${currentVideo.id}?autoplay=${autoplay ? 1 : 0}&rel=0&enablejsapi=1`}
@@ -110,12 +97,8 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
                     </div>
 
                     {/* RIGHT: Playlist (Flex 1, constrained height) */}
-                    {/* On Desktop, we set current height = 100% of parent? 
-                        Parent height is set to `lg:h-[calc(100vh-160px)]`.
-                        This ensures the right column scroll container has a limit relative to viewport,
-                        creating that "YouTube Theater Mode" feel.
-                    */}
-                    <div className="lg:flex-1 h-full flex flex-col min-w-[320px] bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                    {/* REMOVED BORDER HERE as requested */}
+                    <div className="lg:flex-1 h-full flex flex-col min-w-[320px] bg-white rounded-2xl shadow-sm overflow-hidden">
                         {/* List Header */}
                         <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
                             <h3 className="font-bold text-lg text-gray-900">재생 목록</h3>

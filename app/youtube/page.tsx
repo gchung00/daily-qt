@@ -1,95 +1,145 @@
-import { Play } from 'lucide-react';
+import { Play, Calendar, User, Eye, History } from 'lucide-react';
 import SharedFooterWidgets from '@/components/SharedFooterWidgets';
 import { getSermonDates } from '@/lib/sermons';
-
-// Define videos with shorter, "abbreviated" titles as requested
-const VIDEOS = [
-    { id: "cZW3Ouwywag", title: "2026.02.08 주일예배" },
-    { id: "XhuMt6HlKG4", title: "2026.02.01 주일예배" },
-    { id: "eASV6ZAv11I", title: "특별 새벽기도회 (1)" },
-    { id: "JMkW4jkQ1NY", title: "특별 새벽기도회 (2)" },
-    { id: "8L6RA87Rmdk", title: "수요 예배 설교" },
-    { id: "2LRL6ZKxNjA", title: "금요 성령집회" },
-    { id: "k8qwRIDanTs", title: "청년부 수련회" }
-];
+import { FEATURED_VIDEO_IDS } from '@/lib/videos';
+import { getVideoListMetadata } from '@/lib/youtube';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
 export default async function YoutubePage() {
     const sermonDates = await getSermonDates();
 
-    return (
-        <main className="min-h-screen bg-stone-50 text-gray-900 font-sans selection:bg-red-100 selection:text-red-900 pb-0">
-            {/* Header/Hero Section */}
-            <section className="relative pt-24 md:pt-28 pb-12 px-6">
-                <div className="max-w-7xl mx-auto">
-                    {/* Title Block */}
-                    <div className="mb-8 md:mb-12">
-                        <div className="flex items-center gap-3 mb-4">
-                            <span className="w-8 h-1 bg-red-600"></span>
-                            <span className="text-red-600 font-bold tracking-widest text-xs uppercase">
-                                Sermon Archive
-                            </span>
-                        </div>
-                        <h2 className="text-3xl md:text-5xl font-serif font-bold mb-4 leading-tight text-gray-900">
-                            영상 설교
-                        </h2>
-                        <p className="text-gray-500 text-lg max-w-2xl font-normal leading-relaxed">
-                            하나님의 말씀을 영상으로 만나보세요.
-                        </p>
-                    </div>
+    // Fetch real metadata (title, thumbnail, author)
+    // Note: oEmbed doesn't provide date/views without API Key
+    // We'll use a placeholder or parse title if possible for date
+    const videos = await getVideoListMetadata(FEATURED_VIDEO_IDS);
 
-                    {/* Featured Video (Latest) - Clean Card Style */}
-                    <div className="relative aspect-video w-full rounded-2xl overflow-hidden shadow-2xl shadow-black/5 border border-white/50 bg-white group">
-                        <iframe
-                            src={`https://www.youtube.com/embed/${VIDEOS[0].id}?autoplay=0&rel=0`}
-                            className="w-full h-full object-cover"
-                            title="Latest Sermon"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                        />
+    // Fallback if fetch fails (rare, but good to have)
+    if (videos.length === 0) {
+        // ... handled gracefully by returning empty arrays or UI
+    }
+
+    const mainVideo = videos[0];
+    const otherVideos = videos.slice(1);
+
+    return (
+        <main className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans selection:bg-red-100 selection:text-red-900 pb-0">
+            {/* Minimal Header */}
+            <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+                <div className="max-w-[1800px] mx-auto px-6 h-16 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <Link href="/" className="flex items-center gap-2 group">
+                            <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-white shadow-sm group-hover:bg-red-700 transition-colors">
+                                <Play className="w-4 h-4 fill-current" />
+                            </div>
+                            <span className="font-bold text-xl tracking-tight text-gray-900">
+                                Sermon<span className="text-red-600">Tube</span>
+                            </span>
+                        </Link>
                     </div>
                 </div>
-            </section>
+            </header>
 
-            {/* Video Grid Section */}
-            <section className="px-6 py-12 border-t border-stone-200 bg-white">
-                <div className="max-w-7xl mx-auto">
-                    <h3 className="text-xl font-bold mb-8 flex items-center gap-2 text-gray-800">
-                        <Play className="w-5 h-5 text-red-600 fill-current" />
-                        최신 설교 목록
-                    </h3>
+            {/* Split Layout Content */}
+            <div className="max-w-[1800px] mx-auto px-4 md:px-6 py-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8">
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
-                        {VIDEOS.map((video, idx) => (
-                            <div key={video.id} className="group cursor-pointer">
-                                {/* Thumbnail Container */}
-                                <div className="relative aspect-video rounded-xl overflow-hidden mb-3 bg-gray-100 shadow-sm border border-gray-100 transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1">
+                    {/* LEFT: Main Player (Takes up 2/3 space) */}
+                    <div className="lg:col-span-2 xl:col-span-3 space-y-6">
+                        {mainVideo ? (
+                            <div className="group">
+                                {/* Video Player Container */}
+                                <div className="relative aspect-video w-full rounded-2xl overflow-hidden shadow-2xl bg-black">
                                     <iframe
-                                        src={`https://www.youtube.com/embed/${video.id}?rel=0`}
-                                        className="w-full h-full"
-                                        title={video.title}
+                                        src={`https://www.youtube.com/embed/${mainVideo.id}?autoplay=0&rel=0`}
+                                        className="w-full h-full object-cover"
+                                        title={mainVideo.title}
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                         allowFullScreen
-                                        loading="lazy"
                                     />
                                 </div>
+
                                 {/* Video Info */}
-                                <div className="space-y-1">
-                                    <h4 className="font-bold text-lg leading-snug text-gray-900 group-hover:text-red-600 transition-colors font-sans">
-                                        {video.title}
-                                    </h4>
-                                    <p className="text-xs text-gray-400 font-medium">
-                                        {idx === 0 ? 'New Upload' : 'Sermon Video'}
-                                    </p>
+                                <div className="mt-6">
+                                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-3">
+                                        {mainVideo.title}
+                                    </h1>
+
+                                    <div className="flex items-center gap-4 text-sm text-gray-500 pb-6 border-b border-gray-100">
+                                        <div className="flex items-center gap-1">
+                                            <User className="w-4 h-4" />
+                                            <span className="font-medium text-gray-700">{mainVideo.author_name}</span>
+                                        </div>
+                                        {/* Placeholder for date/views since oEmbed lacks them without API key */}
+                                        <div className="flex items-center gap-1">
+                                            <History className="w-4 h-4" />
+                                            <span>Latest Upload</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Description / Actions Placeholder */}
+                                    <div className="mt-6 bg-gray-50 rounded-xl p-6 text-gray-600 leading-relaxed">
+                                        <p>
+                                            새로운 설교 영상입니다. 말씀을 통해 은혜 받으시길 바랍니다.
+                                            (YouTube에서 더 보기: <a href={`https://youtu.be/${mainVideo.id}`} target="_blank" className="text-blue-600 hover:underline">바로가기</a>)
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        ))}
+                        ) : (
+                            // Loading / Empty State
+                            <div className="aspect-video bg-gray-100 rounded-2xl flex items-center justify-center">
+                                <p className="text-gray-400">영상을 불러오는 중입니다...</p>
+                            </div>
+                        )}
                     </div>
-                </div>
-            </section>
 
-            {/* Shared Footer */}
-            <div className="bg-white text-black border-t border-stone-200">
+                    {/* RIGHT: Scrollable List (Takes up 1/3 space) */}
+                    <div className="lg:col-span-1 h-full">
+                        <div className="lg:sticky lg:top-24 space-y-4">
+                            <div className="flex items-center justify-between mb-2">
+                                <h3 className="font-bold text-lg text-gray-900">다음 동영상</h3>
+                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">Autoplay Off</span>
+                            </div>
+
+                            {/* Scrollable Container */}
+                            <div className="space-y-4 lg:max-h-[calc(100vh-180px)] lg:overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
+                                {otherVideos.map((video, idx) => (
+                                    <div key={video.id + idx} className="group flex gap-3 cursor-pointer p-2 rounded-xl hover:bg-gray-100 transition-colors">
+                                        {/* Thumbnail */}
+                                        <div className="relative w-40 aspect-video rounded-lg overflow-hidden bg-gray-200 flex-shrink-0">
+                                            <img
+                                                src={video.thumbnail_url}
+                                                alt={video.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                            />
+                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                                        </div>
+
+                                        {/* Meta */}
+                                        <div className="flex-1 min-w-0 py-1">
+                                            <h4 className="font-bold text-sm text-gray-900 line-clamp-2 leading-snug group-hover:text-red-600 mb-1">
+                                                {video.title}
+                                            </h4>
+                                            <p className="text-xs text-gray-500 mb-0.5 max-w-[90%] truncate">
+                                                {video.author_name}
+                                            </p>
+                                            <p className="text-[10px] text-gray-400">
+                                                YouTube Video
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            {/* Shared Footer (Hidden on mobile if needed, but keeping for consistency) */}
+            <div className="bg-white text-black border-t border-gray-200 mt-12">
                 <SharedFooterWidgets sermonDates={sermonDates} />
             </div>
         </main>

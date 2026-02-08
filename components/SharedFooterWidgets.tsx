@@ -19,16 +19,7 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
 
             const rect = imageRef.current.getBoundingClientRect();
             const windowHeight = window.innerHeight;
-
-            // Calculate how far the element is from the bottom of the screen
-            // 0 = Just entering from bottom
-            // 1 = Reached top
-            // Normalized roughly to 0-1 range when in view
             const progress = 1 - (rect.top / windowHeight);
-
-            // Animation Range:
-            // Starts at 0.95 (entering bottom)
-            // Ends at 1.10 (near top or center) - Subtle growth, less "zoomed in"
             const safeProgress = Math.min(Math.max(progress, 0), 1);
             const newScale = 0.95 + (safeProgress * 0.15);
 
@@ -36,7 +27,7 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll(); // Initial check
+        handleScroll();
 
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
@@ -61,7 +52,6 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
 
                     <div className="flex justify-center lg:justify-end">
                         <div className="bg-gradient-to-br from-indigo-950 via-teal-900 to-emerald-800 border border-white/10 p-8 rounded-2xl shadow-2xl w-full max-w-sm relative overflow-hidden">
-                            {/* Texture overlay for better blending if needed, or just pure gradient */}
                             <ClientCalendarWrapper sermonDates={sermonDates} />
                         </div>
                     </div>
@@ -75,13 +65,9 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
                     backgroundImage: 'url(/profile_background.png)',
                 }}
             >
-                {/* Content Wrapper */}
                 <div className="max-w-5xl mx-auto relative z-10 flex flex-col gap-24">
-
-                    {/* Modern White Card Frame */}
                     <div className="bg-white/95 backdrop-blur-sm p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/50">
                         <div className="flex flex-col md:flex-row gap-12 items-center md:items-start">
-                            {/* Left: Image */}
                             <div className="shrink-0">
                                 <Link href="/profile" className="block w-48 md:w-64 relative cursor-pointer group/image">
                                     <div className="w-full aspect-[3/4] rounded-2xl overflow-hidden shadow-lg ring-1 ring-black/5 transition-transform duration-500 group-hover/image:scale-[1.02]">
@@ -101,7 +87,6 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
                                 </Link>
                             </div>
 
-                            {/* Right: Text */}
                             <div className="text-center md:text-left flex-1 min-w-0 pt-2">
                                 <Link href="/profile" className="block group/profile cursor-pointer">
                                     <div className="mb-6">
@@ -131,9 +116,8 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
                         </div>
                     </div>
 
-                    {/* Footer inside the Parallax Section */}
                     <footer className="text-center text-white/80 text-sm flex flex-col gap-2 items-center justify-center pb-8 drop-shadow-md">
-                        <p>&copy; {new Date().getFullYear()} Chung. All rights reserved.</p>
+                        <p>&copy; {new Date().getFullYear()} Chung. All rights reserved. <span className="opacity-20 text-xs ml-2">v2.1</span></p>
                     </footer>
 
                 </div>

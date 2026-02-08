@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUp, Calendar, List, User, PanelTopOpen } from "lucide-react";
+import { ArrowUp, Calendar, List, User, PanelTopOpen, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function FloatingNav() {
@@ -73,7 +73,20 @@ export default function FloatingNav() {
                     </span>
                 </Link>
 
-                {/* 4. Profile Button */}
+                {/* 4. YouTube Button */}
+                <Link
+                    href="/youtube"
+                    onClick={() => setIsOpen(false)}
+                    className="w-12 h-12 rounded-full bg-white text-foreground shadow-lg border border-black/10 flex items-center justify-center hover:bg-[#FF0000] hover:text-white transition-all group"
+                    title="설교 영상"
+                >
+                    <Play className="w-5 h-5 fill-current" />
+                    <span className="absolute left-14 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                        설교 영상
+                    </span>
+                </Link>
+
+                {/* 5. Profile Button */}
                 <Link
                     href="/profile"
                     onClick={() => setIsOpen(false)}

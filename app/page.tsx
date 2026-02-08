@@ -10,6 +10,14 @@ export default async function Home() {
   const sermonDates = await getSermonDates();
   const latestSermon = await getLatestSermon();
 
+  // Debugging Info (Only visible in dev or if needed, but we'll show it faintly for now)
+  const debugInfo = {
+    totalSermons: sermonDates.length,
+    latestDate: latestSermon?.date || 'None',
+    top5Dates: sermonDates.slice(0, 5),
+    hasToken: !!process.env.BLOB_READ_WRITE_TOKEN
+  };
+
   return (
     <main className="min-h-screen font-sans selection:bg-accent selection:text-white pb-0 bg-white sm:bg-background">
       <TimeHeader />
@@ -25,6 +33,9 @@ export default async function Home() {
             ) : (
               <div className="p-12 text-center text-muted">
                 <p>등록된 설교가 없습니다.</p>
+                <div className="mt-4 text-xs text-gray-300 font-mono text-left">
+                  Debug: {JSON.stringify(debugInfo, null, 2)}
+                </div>
               </div>
             )}
           </div>
@@ -34,7 +45,13 @@ export default async function Home() {
       {/* 2. SHARED WIDGETS (Calendar + Profile) */}
       <SharedFooterWidgets sermonDates={sermonDates} />
 
+      {/* SYSTEM DIAGNOSTICS (Temporary) */}
+      <div className="py-2 text-center text-[10px] text-gray-300 font-mono opacity-50 hover:opacity-100 transition-opacity">
+        Status: {debugInfo.hasToken ? 'Blob Mode' : 'Local Mode'} |
+        Total: {debugInfo.totalSermons} |
+        Latests: {debugInfo.top5Dates.join(', ')}
+      </div>
+
     </main>
   );
 }
-

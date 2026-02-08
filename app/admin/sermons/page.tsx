@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { ArrowLeft, Lock } from 'lucide-react';
 import { SermonManager } from '@/components/SermonManager';
 import AdminEditor from '@/components/AdminEditor';
@@ -76,13 +77,9 @@ export default function ManageSermonsPage() {
         <div className="min-h-screen bg-gray-50 p-6">
             <div className="max-w-6xl mx-auto">
                 <header className="mb-8 flex items-center justify-between">
-                    <button
-                        onClick={() => router.back()}
-                        className="flex items-center text-muted hover:text-foreground transition-colors"
-                    >
-                        <ArrowLeft className="w-5 h-5 mr-2" />
-                        관리자 홈으로
-                    </button>
+                    <Link href="/" className="inline-flex items-center text-gray-900 hover:text-red-600 bg-white px-5 py-2.5 rounded-full transition-all font-bold text-sm uppercase tracking-wider group border border-gray-200 shadow-sm hover:shadow-md">
+                        <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Home
+                    </Link>
                     <h1 className="text-2xl font-bold">설교 수정 및 삭제</h1>
                 </header>
 

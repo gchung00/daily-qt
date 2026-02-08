@@ -161,9 +161,10 @@ export default function ProfilePage() {
                     </p>
 
                     <div className="flex justify-center mb-12">
-                        <Link href="/youtube" className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-full font-bold hover:bg-red-700 transition-colors shadow-lg shadow-red-600/20 group">
-                            <Play className="w-4 h-4 fill-current" />
-                            <span>설교 비디오</span>
+                        {/* UPDATED: Changed from Button to Text Link with Arrow, matching Main Page style */}
+                        <Link href="/youtube" className="inline-flex items-center text-primary font-bold hover:text-primary/80 transition-colors group text-lg">
+                            영상 설교 보기
+                            <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
                         </Link>
                     </div>
 

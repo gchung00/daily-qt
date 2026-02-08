@@ -45,10 +45,7 @@ export async function DELETE(request: Request) {
 
 export async function POST(request: Request) {
     try {
-        console.log("POST /api/sermons called");
         const { text, date, force } = await request.json();
-
-        console.log(`Received upload request for date: ${date}, force: ${force}`);
 
         if (!text || !date) {
             return NextResponse.json({ error: 'Missing text or date' }, { status: 400 });
@@ -56,21 +53,17 @@ export async function POST(request: Request) {
 
         // Simple date format check
         if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-            console.error(`Invalid date format received: ${date}`);
             return NextResponse.json({ error: 'Invalid date format' }, { status: 400 });
         }
 
         const success = await SermonStorage.saveSermon(date, text, force);
 
         if (!success) {
-            console.warn(`Duplicate sermon attempt for date: ${date}`);
             return NextResponse.json(
                 { error: 'Duplicate sermon', message: '이미 해당 날짜에 설교가 등록되어 있습니다.' },
                 { status: 409 }
             );
         }
-
-        console.log(`Sermon saved successfully for date: ${date}`);
 
         // Invalidate caches
         revalidatePath('/', 'layout'); // Force refresh all pages to show new content immediately

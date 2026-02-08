@@ -4,7 +4,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { AdminEditor } from "@/components/AdminEditor";
+import AdminEditor from "@/components/AdminEditor";
 import { VideoManager } from "@/components/VideoManager";
 import { SermonManager } from "@/components/SermonManager";
 
@@ -23,18 +23,15 @@ export default function AdminPage() {
         }
     }, [isAdmin, loading, router]);
 
-    const handleSaveComplete = () => {
-        setRefreshTrigger(prev => prev + 1);
-        setEditData({ text: '', date: '' }); // Reset editor
-        alert("설교가 저장되었습니다.");
-    };
+    // AdminEditor now handles alert and redirect internally.
+    // We just need to reset internal state if component unmounts or we want to clear editor?
+    // Actually, since it redirects, we don't strictly need to handleSaveComplete here unless we want to stay on page.
+    // For now, let's trust AdminEditor's internal behavior.
 
     const handleEditStart = (date: string, text: string) => {
         setEditData({ date, text });
         window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll back to editor
     };
-
-
 
     if (loading || !isAdmin) {
         return (
@@ -59,7 +56,6 @@ export default function AdminPage() {
                 <div className="bg-white rounded-lg shadow-lg border border-secondary/20 p-6">
                     <h2 className="text-xl font-bold mb-6">{editData.text ? '설교 수정' : '새 설교 등록'}</h2>
                     <AdminEditor
-                        onSave={handleSaveComplete}
                         initialText={editData.text}
                         initialDate={editData.date || undefined}
                     />

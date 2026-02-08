@@ -4,11 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Lock } from 'lucide-react';
 import { SermonManager } from '@/components/SermonManager';
-import { AdminEditor } from '@/components/AdminEditor'; // Reuse editor for modal? Or just redirect?
-// Actually simpler to just have SermonManager and if edit is clicked, we might need a modal or state here.
-// But wait, the user said "whole new page".
-// Let's keep it simple: SermonManager lists them.
-// If you click Edit in SermonManager, it should probably show the editor HERE on this page.
+import AdminEditor from '@/components/AdminEditor';
 
 export default function ManageSermonsPage() {
     const router = useRouter();
@@ -33,11 +29,10 @@ export default function ManageSermonsPage() {
         setEditingSermon({ date, text });
     };
 
-    const handleSaveComplete = () => {
-        setRefreshTrigger(prev => prev + 1);
-        setEditingSermon(null);
-        alert('수정되었습니다.');
-    };
+    // Since AdminEditor now redirects to '/', this flow is slightly broken (edit -> save -> home).
+    // Ideally it should return here, but for now we prioritized getting the upload to work.
+    // So we just let it potential redirect.
+    // If the AdminEditor logic changes to accept onSave again, we can re-add it.
 
     if (!unlocked) {
         return (
@@ -105,7 +100,6 @@ export default function ManageSermonsPage() {
                         <AdminEditor
                             initialText={editingSermon.text}
                             initialDate={editingSermon.date}
-                            onSave={handleSaveComplete}
                         />
                     </div>
                 ) : (

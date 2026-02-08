@@ -25,8 +25,6 @@ export function AdminEditor({ onSave, initialText = "", initialDate = format(new
         if (initialDate) setSelectedDate(initialDate);
     }, [initialText, initialDate]);
 
-    // Removed handlePreview function as parsing is now handled by useEffect
-
     useEffect(() => {
         if (!rawText.trim()) {
             setPreview(null);
@@ -36,21 +34,11 @@ export function AdminEditor({ onSave, initialText = "", initialDate = format(new
         const parsed = parseSermon(rawText);
         setPreview(parsed);
 
-        // Auto-detect date from content if possible, otherwise keep current selection
-        // parser returns date string like '2026-01-25' if found
+        // Auto-detect date from content if possible
         if (parsed.date) {
-            // Standardize date format to yyyy-MM-dd just in case
-            // Simple regex check: \d{4}-\d{2}-\d{2} usually from parser standard check
-            // If parser returns "2026. 1. 25", we might need to fix it in parser or here.
-            // Currently parser tries to extract standardized string.
-            // Let's assume user might want to override anyway.
-            // If parser found a date, we update the picker.
-            // But if user manually changed it, we shouldn't overwrite constantly?
-            // Actually, if they paste new text, they expect detection.
-            // Let's only update if the parsed date is different and valid.
-            // For now, let's just let the Input act as the source of truth for saving.
+            // Optional: update date if desired
         }
-    }, [rawText]); // Dependency array includes rawText
+    }, [rawText]);
 
     const handleSave = async (forceOverwrite = false) => {
         if (!preview) return;
@@ -73,13 +61,14 @@ export function AdminEditor({ onSave, initialText = "", initialDate = format(new
                 if (response.status === 409) {
                     // Ask for confirmation to overwrite
                     if (confirm("이미 해당 날짜에 설교가 있습니다. 덮어쓰시겠습니까?")) {
-                        handleSave(true); // Retry with force
+                        await handleSave(true); // Retry with force
                         return; // Exit current execution
                     } else {
                         throw new Error("저장이 취소되었습니다.");
                     }
                 }
-                throw new Error(data.error || 'Failed to save');
+                // Use specific message if available
+                throw new Error(data.message || data.error || 'Failed to save');
             }
 
             alert('설교가 성공적으로 저장되었습니다!');
@@ -95,7 +84,7 @@ export function AdminEditor({ onSave, initialText = "", initialDate = format(new
     };
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[60vh] min-h-[500px]"> {/* Safer fixed height relative to viewport */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[60vh] min-h-[500px]">
             {/* Editor Side */}
             <div className="flex flex-col h-full gap-4">
                 <div className="flex justify-between items-center">
@@ -134,7 +123,7 @@ export function AdminEditor({ onSave, initialText = "", initialDate = format(new
                 />
             </div>
 
-            <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 h-full overflow-y-auto hidden lg:block"> {/* Hide preview on small screens, full height on large */}
+            <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 h-full overflow-y-auto hidden lg:block">
                 <h3 className="text-sm font-bold text-muted mb-4 uppercase tracking-widest text-center">미리보기 화면</h3>
                 {preview ? (
                     <div className="bg-white shadow rounded-lg p-2 origin-top scale-90">

@@ -1,7 +1,14 @@
 export const FEATURED_VIDEO_IDS = [
-    '5oOWZ0GsTcQ', // New Request 2
-    'PaH4REaFQFk', // New Request 2
-    'A88N-1bWGxo', // New Request 2
+    '0qgPv6EqR-Y', // Batch 2
+    'MZq6rlMFV6Y', // Batch 2
+    'pMwObUR-oJk', // Batch 2
+    'ZlQDYhc8XV0', // Batch 2
+    'NtcSyDKqLjY', // Batch 2
+    'r4-WBa3C0k8', // Batch 2
+    'BLv8lon2lvc', // Batch 2
+    '5oOWZ0GsTcQ',
+    'PaH4REaFQFk',
+    'A88N-1bWGxo',
     '7B5vigbQ-Ek',
     'vOsAJF5Eo4w',
     'D-Ci5kQvVvI',

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { SermonStorage } from '@/lib/storage';
-import { revalidateTag, revalidatePath } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic'; // Prevent caching at the route level
 
@@ -33,9 +33,8 @@ export async function DELETE(request: Request) {
     try {
         await SermonStorage.deleteSermon(date);
 
-        // Invalidate caches
-        revalidateTag('sermons');
-        revalidatePath('/', 'layout'); // Force refresh all pages
+        // Invalidate caches - Force refresh all pages
+        revalidatePath('/', 'layout');
 
         return NextResponse.json({ success: true });
     } catch (error) {
@@ -66,8 +65,8 @@ export async function POST(request: Request) {
             );
         }
 
-        // Invalidate caches - This is critical for the new sermon to appear
-        revalidateTag('sermons');
+        // Invalidate caches
+        // Removed revalidateTag as it was causing build errors and is redundant since we removed unstable_cache
         revalidatePath('/', 'layout'); // Force refresh all pages to show new content immediately
 
         return NextResponse.json({ success: true });

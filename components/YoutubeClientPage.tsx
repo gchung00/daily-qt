@@ -69,8 +69,14 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
                 <div className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-160px)] min-h-[600px]">
 
                     {/* LEFT: Main Player (Flex Grow) */}
-                    <div className="lg:flex-[3] flex flex-col h-full">
-                        <div className="w-full bg-black rounded-2xl overflow-hidden shadow-2xl flex-shrink-0 relative" style={{ aspectRatio: '16/9' }}>
+                    {/* LEFT: Main Player (Flex Grow) */}
+                    <div className="lg:flex-[3] flex flex-col h-full bg-white rounded-2xl shadow-sm overflow-hidden">
+                        {/* Video Player Wrapper - Flex 1 to fill height, but keep aspect ratio? 
+                            Actually, standard YouTube style: Video is large, list is next to it.
+                            We'll let the video define the height naturally by aspect ratio, 
+                            and force the list to match it OR fill the screen.
+                        */}
+                        <div className="w-full bg-black flex-shrink-0 relative" style={{ aspectRatio: '16/9' }}>
                             <iframe
                                 src={`https://www.youtube.com/embed/${currentVideo.id}?autoplay=${autoplay ? 1 : 0}&rel=0&enablejsapi=1`}
                                 className="w-full h-full absolute inset-0"
@@ -81,13 +87,13 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
                         </div>
 
                         {/* Video Meta (Below Player) */}
-                        <div className="mt-5 px-1 flex-shrink-0">
+                        <div className="flex-1 p-5 overflow-y-auto">
                             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-3 font-serif line-clamp-2">
                                 {currentVideo.title}
                             </h1>
-                            <div className="flex items-center gap-4 text-sm text-gray-500 pb-4 border-b border-gray-200">
+                            <div className="flex items-center gap-4 text-sm text-gray-500 pb-4 border-b border-gray-100">
                                 <div className="flex items-center gap-2">
-                                    <div className="bg-gray-200 p-2 rounded-full">
+                                    <div className="bg-gray-100 p-2 rounded-full">
                                         <User className="w-4 h-4 text-gray-600" />
                                     </div>
                                     <span className="font-semibold text-gray-800 text-base">{currentVideo.author_name}</span>

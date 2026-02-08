@@ -24,11 +24,23 @@ export const SermonStorage = {
         // Check Blob for new items not in JSON.
         if (process.env.BLOB_READ_WRITE_TOKEN) {
             try {
-                const { blobs } = await list({ prefix: 'sermons/' });
-                blobs.forEach(blob => {
-                    const date = blob.pathname.replace('sermons/', '').replace('.txt', '');
-                    uniqueDates.add(date);
-                });
+                let hasMore = true;
+                let cursor: string | undefined;
+
+                while (hasMore) {
+                    // Fetch page of blobs
+                    const response = await list({ prefix: 'sermons/', cursor });
+
+                    // Add items from this page
+                    response.blobs.forEach(blob => {
+                        const date = blob.pathname.replace('sermons/', '').replace('.txt', '');
+                        uniqueDates.add(date);
+                    });
+
+                    // Prepare for next page
+                    hasMore = response.hasMore;
+                    cursor = response.cursor;
+                }
             } catch (e) {
                 console.warn("Blob list failed (using static only):", e);
             }
@@ -43,7 +55,11 @@ export const SermonStorage = {
         if (process.env.BLOB_READ_WRITE_TOKEN) {
             try {
                 // Check if specific blob exists
-                const { blobs } = await list({ prefix: `sermons/${date}.txt` });
+                // Note: list() with prefix filters by prefix, not exact match unless it's unique
+                // But efficient enough for single file check? 
+                // Actually head() or just trying to fetch URL might be better but we need the URL first.
+                // list() is fine for finding one file generally.
+                const { blobs } = await list({ prefix: `sermons/${date}.txt`, limit: 1 });
                 const blob = blobs.find(b => b.pathname === `sermons/${date}.txt`);
 
                 if (blob) {

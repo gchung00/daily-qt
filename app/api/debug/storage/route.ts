@@ -18,12 +18,28 @@ export async function GET() {
 
         if (hasToken) {
             try {
-                const { blobs } = await list({ prefix: 'sermons/' });
-                debugInfo.blobs = blobs.map(b => ({
+                let hasMore = true;
+                let cursor: string | undefined;
+                const allBlobs = [];
+
+                while (hasMore) {
+                    const { blobs, hasMore: more, cursor: nextCursor } = await list({ prefix: 'sermons/', cursor });
+                    allBlobs.push(...blobs);
+                    hasMore = more;
+                    cursor = nextCursor;
+                }
+
+                // Sort by uploadedAt desc to see newest first
+                allBlobs.sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime());
+
+                debugInfo.blobs = allBlobs.map(b => ({
                     pathname: b.pathname,
                     size: b.size,
                     uploadedAt: b.uploadedAt
                 }));
+
+                debugInfo.totalBlobs = allBlobs.length;
+
             } catch (e: any) {
                 debugInfo.blobError = e.message;
             }

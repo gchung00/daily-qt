@@ -7,7 +7,7 @@ export async function getSermon(date: string): Promise<ParsedSermon | null> {
         if (!rawText) return null;
 
         const parsed = parseSermon(rawText);
-        parsed.date = date;
+        parsed.date = date; // Standardize date from filename/key
         return parsed;
     } catch (error) {
         console.error(`Error reading sermon for ${date}:`, error);
@@ -15,25 +15,15 @@ export async function getSermon(date: string): Promise<ParsedSermon | null> {
     }
 }
 
-import { unstable_cache } from 'next/cache';
-
-// Cached version of listing sermons to save Blob Ops
-// Revalidate tag: 'sermons'
-const getCachedSermonDates = unstable_cache(
-    async () => {
-        try {
-            return await SermonStorage.listSermons();
-        } catch (error) {
-            console.error('Error listing sermons:', error);
-            return [];
-        }
-    },
-    ['sermons-list'], // Key parts
-    { tags: ['sermons'], revalidate: 3600 } // Default revalidate 1 hour, but we will trigger on-demand
-);
-
+// Previously used unstable_cache here, but removed it to ensure fresh data after uploads.
+// Direct fetch from storage is fast enough for now (list operation).
 export async function getSermonDates(): Promise<string[]> {
-    return getCachedSermonDates();
+    try {
+        return await SermonStorage.listSermons();
+    } catch (error) {
+        console.error('Error listing sermons:', error);
+        return [];
+    }
 }
 
 export async function getLatestSermon(): Promise<ParsedSermon | null> {

@@ -14,7 +14,6 @@ function getStaticSermons() {
     return staticSermonsCache || {};
 }
 
-
 export const SermonStorage = {
     async listSermons(): Promise<string[]> {
         // Priority 1: Static JSON (Fastest, Free, Reliable)
@@ -39,64 +38,79 @@ export const SermonStorage = {
     },
 
     async getSermon(date: string): Promise<string | null> {
-        // Priority 1: Static JSON
+        // Priority 1: Blob (Dynamic / Updates)
+        // Check this FIRST so we can "eject" or "overwrite" static data with new uploads.
+        if (process.env.BLOB_READ_WRITE_TOKEN) {
+            try {
+                // Check if specific blob exists
+                const { blobs } = await list({ prefix: `sermons/${date}.txt` });
+                const blob = blobs.find(b => b.pathname === `sermons/${date}.txt`);
+
+                if (blob) {
+                    const response = await fetch(blob.url);
+                    if (response.ok) {
+                        return await response.text();
+                    }
+                }
+            } catch (e) {
+                // Ignore blob errors (blocked store), fall back to static
+                console.warn(`Blob fetch failed for ${date}, falling back to static:`, e);
+            }
+        } else {
+            // Development: Check local FS before static JSON?
+            // Actually, local FS *is* the dynamic source in dev. 
+            // If local FS has it, use it.
+            try {
+                const filePath = join(SERMONS_DIR, `${date}.txt`);
+                const content = await readFile(filePath, 'utf-8');
+                return content;
+            } catch (e) {
+                // File not found locally, proceed to static JSON
+            }
+        }
+
+        // Priority 2: Static JSON (Fallback / Archive)
         const staticData = getStaticSermons();
         if (staticData && staticData[date]) {
             return staticData[date];
-        }
-
-        // Priority 2: Blob (Fallback for new items not in JSON?)
-        if (process.env.BLOB_READ_WRITE_TOKEN) {
-            try {
-                const { blobs } = await list({ prefix: `sermons/${date}.txt` });
-                const blob = blobs.find(b => b.pathname === `sermons/${date}.txt`);
-                if (blob) {
-                    const response = await fetch(blob.url);
-                    return await response.text();
-                }
-            } catch (e) {
-                // Ignore blob errors (blocked store)
-                console.warn("Blob fetch failed (likely blocked):", e);
-            }
         }
 
         return null; // Not found anywhere
     },
 
     async saveSermon(date: string, text: string, force: boolean = false): Promise<boolean> {
-        // Saving requires Blob or FS. 
-        // If Production & Blocked -> We cannot save new sermons easily via Admin UI.
-        // We will try Blob, but it might fail.
-
         const hasToken = !!process.env.BLOB_READ_WRITE_TOKEN;
 
-        // Check availability
+        // Check availability (unless forced)
         if (!force) {
             const existing = await this.getSermon(date);
-            if (existing) return false;
+            if (existing) return false; // Signal conflict
         }
 
         if (hasToken) {
             try {
+                // Vercel Blob Upload
                 await put(`sermons/${date}.txt`, text, {
                     access: 'public',
                     addRandomSuffix: false
                 });
                 return true;
-            } catch (e) {
+            } catch (e: any) {
                 console.error("Blob upload failed:", e);
-                // Fallback? No fallback in Vercel Serverless for permanent storage
-                throw new Error("Storage is currently blocked or unavailable.");
+                // Throw the actual error so API can return it to the user
+                throw new Error(`Blob Upload Failed: ${e.message || e}`);
             }
         } else {
-            // Development
-            await ensureDir();
-            const filePath = join(SERMONS_DIR, `${date}.txt`);
-            await writeFile(filePath, text, 'utf-8');
-
-            // Also update local JSON cache if possible?
-            // Re-saving to JSON in dev is complex, just rely on file.
-            return true;
+            // Local Development (File System)
+            try {
+                await ensureDir();
+                const filePath = join(SERMONS_DIR, `${date}.txt`);
+                await writeFile(filePath, text, 'utf-8');
+                return true;
+            } catch (e: any) {
+                console.error("FS write failed:", e);
+                throw new Error(`File Write Failed: ${e.message || e}`);
+            }
         }
     },
 
@@ -123,4 +137,3 @@ async function ensureDir() {
         await mkdir(SERMONS_DIR, { recursive: true });
     }
 }
-

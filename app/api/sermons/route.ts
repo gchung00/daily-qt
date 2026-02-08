@@ -66,8 +66,12 @@ export async function POST(request: Request) {
         // @ts-ignore - Build error: Expected 2 arguments
         revalidateTag('sermons'); // Invalidate cache
         return NextResponse.json({ success: true });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Upload error:', error);
-        return NextResponse.json({ error: 'Server error' }, { status: 500 });
+        // Return the specific error message from storage logic
+        return NextResponse.json({
+            error: 'Server error',
+            message: error.message || '저장 중 알 수 없는 오류가 발생했습니다.'
+        }, { status: 500 });
     }
 }

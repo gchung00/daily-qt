@@ -27,17 +27,17 @@ export function parseSermon(rawText: string): ParsedSermon {
     const lines = rawText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
     const sections: SermonSection[] = [];
     let title = '';
-    // Try to find date in header line
     let date = '';
 
     // Check for standard format first (starts with Date Header-like line)
+    // e.g., "2024년 2월 5일 예배"
     const isStandardFormat = lines[0]?.match(/^\d+월\s*\d+일\s*예배/);
 
     if (isStandardFormat) {
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
 
-            // Standard Header Detection (Date)
+            // Standard Header Detection (which often contains the Date)
             if (line.match(/^\d+월\s*\d+일\s*예배/)) {
                 sections.push({ type: 'header', content: line });
                 title = line;
@@ -117,64 +117,63 @@ export function parseSermon(rawText: string): ParsedSermon {
     } else {
         // --- UNSTRUCTURED / NEW FORMAT HANDLING ---
         // Example:
-        // 보라 내가 새 일을 행하리니 사43:18-21 (Title + Main Scripture)
-        // 2026 (Year)
-        // 1. 25 주일 낮 (Date info)
-        // ... text ...
+        // 롯이 아브람을 떠난 후에  창13:10-18
+        // 2026. 2. 8 주일 낮
 
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
 
-            // 1. First Line: Title & Scripture
+            // 1. First Line Handling: Title & Potential Scripture Ref
             if (i === 0) {
-                title = line;
-                // Try to extract scripture ref at the end
-                // Regex: Look for bible book + number at the end of the line
-                // e.g. "사43:18-21"
-                // Iterate bible books to be sure
+                // Try to find scripture ref at end of line
                 let scriptureFound = false;
                 for (const book of BIBLE_BOOKS) {
-                    // Regex: Book followed by digits, colon/dot, digits, end of line
+                    // Look for Ref at END of line
                     const regex = new RegExp(`(${book}\\d+[:\\.]\\d+(?:-\\d+)?)$`);
                     const match = line.match(regex);
                     if (match) {
-                        const ref = match[1];
+                        const ref = match[1]; // e.g. "창13:10-18"
                         const titleOnly = line.replace(ref, '').trim();
-                        // Push Header with Title
+
                         sections.push({ type: 'header', content: titleOnly });
-                        // Push Special Main Scripture Section
-                        sections.push({ type: 'scripture_main', reference: ref, text: '' }); // Text might be implicitly understood or in title
+                        sections.push({ type: 'scripture_main', reference: ref, text: '' });
+
                         title = titleOnly;
                         scriptureFound = true;
                         break;
                     }
                 }
+
                 if (!scriptureFound) {
+                    // If no scripture ref found, treat whole line as Title
+                    title = line;
                     sections.push({ type: 'header', content: line });
                 }
                 continue;
             }
 
-            // 2. Date Lines (2026 or 1. 25)
-            // Just treat them as text-based meta or ignore if redundant? 
-            // The standard view renders 'header' type.
-            // Let's detecting separate date lines.
-            if (line.match(/^\d{4}$/) || line.match(/^\d{1,2}\.\s*\d{1,2}/)) {
-                // Maybe add to a 'meta' or 'text' section with specific style? 
-                // Or just skip/merge into content? 
-                // Let's add as small text/subtitle
-                sections.push({ type: 'text', content: line }); // Render as text for now
+            // 2. Date Extraction (e.g., "2026. 2. 8" or "2026. 02. 08")
+            // Matches: 4 digits, dot, space(opt), 1-2 digits, dot, ...
+            // Also can match: "2026. 2. 8 주일 낮" -> extracts date part
+            const dateMatch = line.match(/^(\d{4})\.\s*(\d{1,2})\.\s*(\d{1,2})/);
+            if (dateMatch) {
+                const year = dateMatch[1];
+                const month = dateMatch[2].padStart(2, '0');
+                const day = dateMatch[3].padStart(2, '0');
+                date = `${year}-${month}-${day}`;
+
+                // Add as text line (subtitle) so user sees it
+                sections.push({ type: 'text', content: line });
                 continue;
             }
 
-            // 3. Standard Text Parsing (same as above for body)
-            // Greeting
+            // 3. Greeting
             if (line.startsWith('오늘도') && line.includes('좋은 날')) {
                 sections.push({ type: 'greeting', content: line });
                 continue;
             }
 
-            // Scripture Quote
+            // 4. Scripture Quote
             if (BIBLE_REF_REGEX.test(line)) {
                 const firstSpace = line.indexOf(' ');
                 if (firstSpace > 0) {
@@ -187,7 +186,7 @@ export function parseSermon(rawText: string): ParsedSermon {
                 continue;
             }
 
-            // Benediction
+            // 5. Benediction
             if (line.endsWith('축원합니다.') || line.endsWith('축원합니다')) {
                 sections.push({ type: 'benediction', content: line });
                 continue;
@@ -199,7 +198,7 @@ export function parseSermon(rawText: string): ParsedSermon {
 
     return {
         title,
-        date, // TODO: Extract from title if needed
+        date,
         sections
     };
 }

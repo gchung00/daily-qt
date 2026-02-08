@@ -57,7 +57,7 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
 
             {/* FLOATING HEADER (Back Button from Profile Page) */}
             <div className="fixed top-0 right-0 w-full z-50 p-6 flex justify-between md:justify-end md:p-8 pointer-events-none">
-                <Link href="/" className="pointer-events-auto inline-flex items-center text-gray-900 hover:text-red-600 bg-white/80 hover:bg-white backdrop-blur-md px-5 py-2.5 rounded-full transition-all font-bold text-sm uppercase tracking-wider group border border-black/5 shadow-lg cursor-pointer">
+                <Link href="/" className="pointer-events-auto inline-flex items-center text-gray-900 hover:text-red-600 bg-white/80 hover:bg-white backdrop-blur-md px-5 py-2.5 rounded-full transition-all font-bold text-sm uppercase tracking-wider group shadow-sm hover:shadow-md cursor-pointer">
                     <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Home
                 </Link>
             </div>
@@ -100,7 +100,7 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
                     {/* REMOVED BORDER HERE as requested */}
                     <div className="lg:flex-1 h-full flex flex-col min-w-[320px] bg-white rounded-2xl shadow-sm overflow-hidden">
                         {/* List Header */}
-                        <div className="p-4 border-b border-black/5 flex items-center justify-between bg-gray-50/50">
+                        <div className="p-4 flex items-center justify-between bg-gray-50/50">
                             <h3 className="font-bold text-lg text-gray-900">재생 목록</h3>
                             <button
                                 onClick={() => setAutoplay(!autoplay)}

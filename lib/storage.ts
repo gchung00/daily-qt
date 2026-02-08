@@ -58,8 +58,6 @@ export const SermonStorage = {
             }
         } else {
             // Development: Check local FS before static JSON?
-            // Actually, local FS *is* the dynamic source in dev. 
-            // If local FS has it, use it.
             try {
                 const filePath = join(SERMONS_DIR, `${date}.txt`);
                 const content = await readFile(filePath, 'utf-8');
@@ -90,14 +88,17 @@ export const SermonStorage = {
         if (hasToken) {
             try {
                 // Vercel Blob Upload
+                // We must use allowOverwrite: true to update existing files when force is true (or even if not, since we checked above)
+                // The API error explicitly suggested `allowOverwrite: true`
                 await put(`sermons/${date}.txt`, text, {
                     access: 'public',
-                    addRandomSuffix: false
+                    addRandomSuffix: false,
+                    // @ts-ignore - The Vercel Blob SDK requires this flag for overwrites, ignoring TS warning if types are old
+                    allowOverwrite: true
                 });
                 return true;
             } catch (e: any) {
                 console.error("Blob upload failed:", e);
-                // Throw the actual error so API can return it to the user
                 throw new Error(`Blob Upload Failed: ${e.message || e}`);
             }
         } else {

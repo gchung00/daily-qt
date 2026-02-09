@@ -5,16 +5,23 @@ import Link from 'next/link';
 import { ArrowLeft, User, Play, Pause, SkipForward } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 
-interface YoutubeVideo {
-    id: string;
+// Dynamically import ReactPlayer to avoid hydration issues
+const ReactPlayer = dynamic(() => import('react-player'), { ssr: false }) as any;
+
+export interface VideoItem {
+    id: string; // YouTube ID or unique ID for HLS
+    type: 'youtube' | 'hls';
+    url?: string; // Required for HLS
     title: string;
     thumbnail_url: string;
     author_name: string;
+    date?: string; // Optional date for sermons
 }
 
 interface YoutubeClientPageProps {
-    videos: YoutubeVideo[];
+    videos: VideoItem[];
 }
 
 export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
@@ -22,6 +29,7 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [autoplay, setAutoplay] = useState(false);
     const [isClient, setIsClient] = useState(false);
+    const playerRef = useRef<any>(null);
 
     // Initialize random video on mount (client-side only to avoid hydration mismatch if random)
     useEffect(() => {
@@ -33,11 +41,21 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
     const currentVideo = videos[currentIndex];
 
     // Handle video end / auto-next
+    const handleVideoEnded = () => {
+        if (autoplay) {
+            const nextIndex = (currentIndex + 1) % videos.length;
+            setCurrentIndex(nextIndex);
+        }
+    };
+
+    // YouTube specific message handler (only needed if using iframe directly)
     useEffect(() => {
         const handleMessage = (event: MessageEvent) => {
             if (event.origin.includes('youtube.com')) {
                 try {
-                    const data = JSON.parse(event.data);
+                    // This was for the custom iframe. If we move to ReactPlayer for everything or mix, 
+                    // we might not need this if ReactPlayer handles onEnded.
+                    // For now, let's keep it if we use iframe for YouTube.
                 } catch (e) { }
             }
         };
@@ -54,9 +72,6 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
 
     return (
         <div className="min-h-screen bg-white sm:bg-background text-gray-900 font-sans pb-12">
-
-
-
             {/* MAIN CONTENT */}
             <div className="max-w-[1700px] mx-auto px-4 md:px-6 pt-20">
 
@@ -64,41 +79,55 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
                 <div className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-160px)] min-h-[600px]">
 
                     {/* LEFT: Main Player (Flex Grow) */}
-                    {/* LEFT: Main Player (Flex Grow) */}
                     <div className="lg:flex-[3] flex flex-col h-full bg-white rounded-2xl shadow-sm overflow-hidden">
-                        {/* Video Player Wrapper - Flex 1 to fill height, but keep aspect ratio? 
-                            Actually, standard YouTube style: Video is large, list is next to it.
-                            We'll let the video define the height naturally by aspect ratio, 
-                            and force the list to match it OR fill the screen.
-                        */}
                         <div className="w-full bg-black flex-shrink-0 relative" style={{ aspectRatio: '16/9' }}>
-                            <iframe
-                                src={`https://www.youtube.com/embed/${currentVideo.id}?autoplay=${autoplay ? 1 : 0}&rel=0&enablejsapi=1`}
-                                className="w-full h-full absolute inset-0"
-                                title={currentVideo.title}
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                            />
+                            {currentVideo?.type === 'youtube' ? (
+                                <iframe
+                                    src={`https://www.youtube.com/embed/${currentVideo.id}?autoplay=${autoplay ? 1 : 0}&rel=0&enablejsapi=1`}
+                                    className="w-full h-full absolute inset-0"
+                                    title={currentVideo.title}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                />
+                            ) : (
+                                <div className="w-full h-full absolute inset-0">
+                                    <ReactPlayer
+                                        url={currentVideo?.url}
+                                        width="100%"
+                                        height="100%"
+                                        playing={autoplay}
+                                        controls
+                                        onEnded={handleVideoEnded}
+                                        config={{
+                                            file: {
+                                                forceHLS: true,
+                                            }
+                                        } as any}
+                                    />
+                                </div>
+                            )}
                         </div>
 
                         {/* Video Meta (Below Player) */}
                         <div className="flex-1 p-5 overflow-y-auto">
                             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-3 font-serif line-clamp-2">
-                                {currentVideo.title}
+                                {currentVideo?.title}
                             </h1>
                             <div className="flex items-center gap-4 text-sm text-gray-500 pb-4 border-b border-gray-100">
                                 <div className="flex items-center gap-2">
                                     <div className="bg-gray-100 p-2 rounded-full">
                                         <User className="w-4 h-4 text-gray-600" />
                                     </div>
-                                    <span className="font-semibold text-gray-800 text-base">{currentVideo.author_name}</span>
+                                    <span className="font-semibold text-gray-800 text-base">{currentVideo?.author_name}</span>
                                 </div>
+                                {currentVideo?.date && (
+                                    <span className="text-gray-400">| {currentVideo.date}</span>
+                                )}
                             </div>
                         </div>
                     </div>
 
                     {/* RIGHT: Playlist (Flex 1, constrained height) */}
-                    {/* REMOVED BORDER HERE as requested */}
                     <div className="lg:flex-1 h-full flex flex-col min-w-[320px] bg-white rounded-2xl shadow-sm overflow-hidden">
                         {/* List Header */}
                         <div className="p-4 flex items-center justify-between bg-gray-50/50">
@@ -121,7 +150,7 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
                                 const isPlaying = idx === currentIndex;
                                 return (
                                     <div
-                                        key={video.id}
+                                        key={video.id + idx}
                                         onClick={() => handleVideoClick(idx)}
                                         className={cn(
                                             "flex gap-3 p-2 rounded-xl cursor-pointer transition-all group",

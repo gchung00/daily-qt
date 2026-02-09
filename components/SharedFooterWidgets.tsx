@@ -125,7 +125,9 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
                     </div>
 
                     <footer className="text-center text-white/80 text-sm flex flex-col gap-2 items-center justify-center pb-8 drop-shadow-md">
-                        <p>&copy; {new Date().getFullYear()} Chung. All rights reserved. <span className="opacity-20 text-xs ml-2">v2.1</span></p>
+                        <p>&copy; {new Date().getFullYear()} Chung. All rights reserved.
+                            <Link href="/admin" className="opacity-20 hover:opacity-100 transition-opacity text-xs ml-2">v2.1</Link>
+                        </p>
                     </footer>
 
                 </div>

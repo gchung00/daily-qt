@@ -20,7 +20,7 @@ interface YoutubeClientPageProps {
 export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
     // State
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [autoplay, setAutoplay] = useState(true);
+    const [autoplay, setAutoplay] = useState(false);
     const [isClient, setIsClient] = useState(false);
 
     // Initialize random video on mount (client-side only to avoid hydration mismatch if random)
@@ -55,15 +55,10 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
     return (
         <div className="min-h-screen bg-white sm:bg-background text-gray-900 font-sans pb-12">
 
-            {/* FLOATING HEADER (Back Button from Profile Page) */}
-            <div className="fixed top-0 right-0 w-full z-50 p-6 flex justify-between md:justify-end md:p-8 pointer-events-none">
-                <Link href="/" className="pointer-events-auto inline-flex items-center text-gray-900 hover:text-red-600 bg-white/80 hover:bg-white backdrop-blur-md px-5 py-2.5 rounded-full transition-all font-bold text-sm uppercase tracking-wider group shadow-sm hover:shadow cursor-pointer">
-                    <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Home
-                </Link>
-            </div>
+
 
             {/* MAIN CONTENT */}
-            <div className="max-w-[1700px] mx-auto px-4 md:px-6 pt-24 md:pt-28">
+            <div className="max-w-[1700px] mx-auto px-4 md:px-6 pt-20">
 
                 {/* Flex Container for Desktop "Equal Height" effect */}
                 <div className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-160px)] min-h-[600px]">

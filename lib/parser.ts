@@ -23,6 +23,7 @@ const BIBLE_BOOKS = [
 // Regex to detect Bible references at start of line (e.g., "롬8:6 ...")
 const BIBLE_REF_REGEX = new RegExp(`^(${BIBLE_BOOKS.join('|')})\\d+[:\\.]`);
 
+// Parser logic updated to distinguish between numbered headers and text starting with numbers.
 export function parseSermon(rawText: string): ParsedSermon {
     const lines = rawText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
     const sections: SermonSection[] = [];
@@ -73,9 +74,20 @@ export function parseSermon(rawText: string): ParsedSermon {
             if (numberedMatch) {
                 const number = parseInt(numberedMatch[1]);
                 const content = numberedMatch[2];
+
+                // Check for Prayer Item context first
                 const lastType = sections.length > 0 ? sections[sections.length - 1].type : '';
-                if (lastType === 'prayer_title' || lastType === 'prayer_item') {
+                const isPrayerItem = lastType === 'prayer_title' || lastType === 'prayer_item';
+
+                if (isPrayerItem) {
                     sections.push({ type: 'prayer_item', number, content });
+                    continue;
+                }
+
+                // User Rule:
+                // Treat as subheader UNLESS followed by another number.
+                if (/^\d/.test(content)) {
+                    sections.push({ type: 'text', content: line });
                 } else {
                     sections.push({ type: 'point_title', number, content });
                 }
@@ -189,6 +201,30 @@ export function parseSermon(rawText: string): ParsedSermon {
             // 5. Benediction
             if (line.endsWith('축원합니다.') || line.endsWith('축원합니다')) {
                 sections.push({ type: 'benediction', content: line });
+                continue;
+            }
+
+            // 6. Numbered Points (Added to Unstructured Block)
+            const numberedMatch = line.match(/^(\d+)\.\s+(.*)/);
+            if (numberedMatch) {
+                const number = parseInt(numberedMatch[1]);
+                const content = numberedMatch[2];
+
+                // Check for Prayer Item
+                const lastType = sections.length > 0 ? sections[sections.length - 1].type : '';
+                const isPrayerItem = lastType === 'prayer_title' || lastType === 'prayer_item';
+
+                if (isPrayerItem) {
+                    sections.push({ type: 'prayer_item', number, content });
+                    continue;
+                }
+
+                // User Rule:
+                if (/^\d/.test(content)) {
+                    sections.push({ type: 'text', content: line });
+                } else {
+                    sections.push({ type: 'point_title', number, content });
+                }
                 continue;
             }
 

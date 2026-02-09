@@ -2,8 +2,7 @@ import { getSermonDates, getLatestSermon } from '@/lib/sermons';
 import Link from 'next/link';
 import { SermonView } from '@/components/SermonView';
 import SharedFooterWidgets from '@/components/SharedFooterWidgets';
-import TimeHeader from '@/components/TimeHeader';
-
+// Force dynamic rendering since we read from file system
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
@@ -12,11 +11,10 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen font-sans selection:bg-accent selection:text-white pb-0 bg-white sm:bg-background">
-      <TimeHeader />
 
       {/* 1. MAIN CONTENT: LATEST SERMON */}
       {/* Increased spacing and slightly darker background */}
-      <section className="py-12 px-4 md:px-12 relative">
+      <section className="pt-20 pb-12 px-4 md:px-12 relative">
         <div className="max-w-5xl mx-auto">
           {/* Lighter Content Wrapper - #F5F4F1 (Only on SM up) */}
           <div className="sm:bg-[#F5F4F1] sm:rounded-[2.5rem] sm:shadow-sm sm:border sm:border-card-border/60 py-6 sm:p-8">

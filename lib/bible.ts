@@ -81,7 +81,21 @@ export const BIBLE_BOOKS_DATA: BibleBook[] = [
 export function getBookFromReference(reference: string): BibleBook | null {
     if (!reference) return null;
 
-    const book = BIBLE_BOOKS_DATA.find(b => reference.startsWith(b.abbrev) || reference.startsWith(b.name));
+    // Find a book that matches the start of the reference
+    const book = BIBLE_BOOKS_DATA.find(b => {
+        if (reference.startsWith(b.name)) return true;
+        if (reference.startsWith(b.abbrev)) {
+            // Boundary Check: Ensure the next character is a number or space
+            // This prevents "사변" (Incident) from matching "사" (Isaiah)
+            const nextChar = reference[b.abbrev.length];
+            if (!nextChar) return false; // "창" alone is not a valid ref usually, or is it? "창" -> Gen. Let's say valid if exact match? 
+            // Actually, if it's exact match "창", nextChar is undefined.
+            // If nextChar exists, it MUST be a number or space (or dot/colon?).
+            return /[\d\s\.:]/.test(nextChar);
+        }
+        return false;
+    });
+
     return book || null;
 }
 

@@ -37,10 +37,21 @@ export async function getLatestSermon(): Promise<ParsedSermon | null> {
 
 export async function getAllSermons(): Promise<ParsedSermon[]> {
     const dates = await getSermonDates();
-    const sermons = await Promise.all(dates.map(date => getSermon(date)));
+    const sermons: ParsedSermon[] = [];
 
-    // Filter out nulls and sort by date descending
-    return sermons
-        .filter((s): s is ParsedSermon => s !== null)
-        .sort((a, b) => b.date.localeCompare(a.date));
+    // Concurrency Limit (Batching)
+    // Fetching 500+ files at once causes storage timeouts.
+    const BATCH_SIZE = 10;
+
+    for (let i = 0; i < dates.length; i += BATCH_SIZE) {
+        const batch = dates.slice(i, i + BATCH_SIZE);
+        const results = await Promise.all(batch.map(date => getSermon(date)));
+
+        results.forEach(s => {
+            if (s) sermons.push(s);
+        });
+    }
+
+    // Sort by date descending
+    return sermons.sort((a, b) => b.date.localeCompare(a.date));
 }

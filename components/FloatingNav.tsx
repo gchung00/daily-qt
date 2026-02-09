@@ -3,18 +3,23 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUp, Calendar, List, User, PanelTopOpen, Play } from "lucide-react";
+import { Calendar, List, User, Home, Play, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function FloatingNav() {
-    const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
+    const [scrolled, setScrolled] = useState(false);
 
-    // Scroll to Top
-    const handleScrollTop = () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        setIsOpen(false);
-    };
+    // Initial check for Home
+    const isHome = pathname === "/";
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     // Calendar Navigation (Smart Scroll)
     const handleCalendar = (e: React.MouseEvent) => {
@@ -23,94 +28,65 @@ export default function FloatingNav() {
             e.preventDefault();
             element.scrollIntoView({ behavior: "smooth" });
         }
-        setIsOpen(false);
     };
 
     return (
-        <div className="fixed bottom-6 left-6 z-50 flex flex-col items-start pointer-events-none">
-            {/* Menu Items */}
-            <div
-                className={cn(
-                    "flex flex-col-reverse items-center gap-3 mb-4 transition-all duration-300 pointer-events-auto",
-                    isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"
-                )}
-            >
-                {/* 1. Top Button */}
-                <button
-                    onClick={handleScrollTop}
-                    className="w-12 h-12 rounded-full bg-white text-foreground shadow-lg border border-black/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all group"
-                    title="맨 위로"
-                >
-                    <ArrowUp className="w-5 h-5" />
-                    <span className="absolute left-14 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                        맨 위로
-                    </span>
-                </button>
+        <nav
+            className={cn(
+                "fixed top-0 left-0 w-full z-50 transition-all duration-300",
+                (scrolled || !isHome) && pathname !== "/profile" && pathname !== "/sermons" && pathname !== "/youtube" ? "bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100/50 py-2" : "bg-transparent py-4"
+            )}
+        >
+            <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-[1fr_auto_1fr] items-center">
 
-                {/* 2. Calendar Button */}
-                <Link
-                    href="/#calendar"
-                    onClick={handleCalendar}
-                    className="w-12 h-12 rounded-full bg-white text-foreground shadow-lg border border-black/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all group"
-                    title="달력으로 이동"
-                >
-                    <Calendar className="w-5 h-5" />
-                    <span className="absolute left-14 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                        달력 이동
-                    </span>
-                </Link>
+                {/* Left: Empty for balance */}
+                <div></div>
 
-                {/* 3. List Button */}
-                <Link
-                    href="/sermons"
-                    onClick={() => setIsOpen(false)}
-                    className="w-12 h-12 rounded-full bg-white text-foreground shadow-lg border border-black/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all group"
-                    title="전체 목록"
-                >
-                    <List className="w-5 h-5" />
-                    <span className="absolute left-14 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                        전체 목록
-                    </span>
-                </Link>
+                {/* Center: Main Menu */}
+                <div className={cn(
+                    "flex flex-wrap items-center justify-center gap-1 sm:gap-2 p-1 rounded-full sm:p-0 transition-all duration-300",
+                    pathname === "/profile" || pathname === "/sermons" || pathname === "/youtube" ? "bg-white/90 backdrop-blur-md shadow-sm px-4 py-2" : "bg-white/50 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none"
+                )}>
+                    <NavLink href="/" icon={<Home className="w-4 h-4 sm:w-5 sm:h-5" />} label="" />
+                    <NavLink href="/sermons" icon={<List className="w-4 h-4 sm:w-5 sm:h-5" />} label="전체 말씀" />
+                    <div onClick={handleCalendar} className="cursor-pointer">
+                        <NavLink href="/#calendar" icon={<Calendar className="w-4 h-4 sm:w-5 sm:h-5" />} label="달력 보기" />
+                    </div>
+                    <NavLink href="/youtube" icon={<Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />} label="영상 설교" highlight />
+                    <NavLink href="/profile" icon={<User className="w-4 h-4 sm:w-5 sm:h-5" />} label="목사님 소개" />
+                </div>
 
-                {/* 4. YouTube Button */}
-                <Link
-                    href="/youtube"
-                    onClick={() => setIsOpen(false)}
-                    className="w-12 h-12 rounded-full bg-white text-foreground shadow-lg border border-black/10 flex items-center justify-center hover:bg-[#FF0000] hover:text-white transition-all group"
-                    title="설교 영상"
-                >
-                    <Play className="w-5 h-5 fill-current" />
-                    <span className="absolute left-14 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                        설교 영상
-                    </span>
-                </Link>
-
-                {/* 5. Profile Button */}
-                <Link
-                    href="/profile"
-                    onClick={() => setIsOpen(false)}
-                    className="w-12 h-12 rounded-full bg-white text-foreground shadow-lg border border-black/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all group"
-                    title="목사님 소개"
-                >
-                    <User className="w-5 h-5" />
-                    <span className="absolute left-14 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                        목사님 소개
-                    </span>
-                </Link>
+                {/* Right: Admin Lock Icon (Far Right) */}
+                <div className="flex justify-end">
+                    <Link href="/admin" className="p-2 rounded-full text-teal-900/30 hover:text-teal-900 hover:bg-teal-50 transition-all duration-300" title="Admin Access">
+                        <Lock className="w-4 h-4" />
+                    </Link>
+                </div>
             </div>
+        </nav>
+    );
+}
 
-            {/* Toggle Button */}
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className={cn(
-                    "h-14 w-14 rounded-full bg-white text-primary shadow-lg border border-black/10 flex items-center justify-center transition-all duration-300 hover:scale-105 hover:shadow-xl pointer-events-auto",
-                    isOpen ? "rotate-180 bg-primary text-white border-primary" : ""
-                )}
-                aria-label="Open Navigation"
-            >
-                <PanelTopOpen className="w-6 h-6" />
-            </button>
-        </div>
+function NavLink({ href, icon, label, highlight = false }: { href: string, icon: React.ReactNode, label: string, highlight?: boolean }) {
+    const pathname = usePathname();
+    const isActive = pathname === href;
+
+    return (
+        <Link
+            href={href}
+            className={cn(
+                "flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full transition-all duration-200 group",
+                isActive
+                    ? "bg-primary text-white shadow-md"
+                    : highlight
+                        ? "bg-red-50 text-red-600 hover:bg-red-100"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+            )}
+        >
+            <span className={cn("group-hover:scale-110 transition-transform duration-200", isActive ? "text-white" : "")}>
+                {icon}
+            </span>
+            {label && <span className="hidden sm:inline whitespace-nowrap text-xs sm:text-base font-bold">{label}</span>}
+        </Link>
     );
 }

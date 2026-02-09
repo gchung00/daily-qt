@@ -42,7 +42,7 @@ export default function AdminPage() {
     }
 
     return (
-        <main className="min-h-screen bg-secondary/5 p-6">
+        <main className="min-h-screen bg-secondary/5 px-6 pb-6 pt-24">
             <header className="flex justify-between items-center max-w-6xl mx-auto mb-10 bg-white p-6 rounded-lg shadow-sm border border-secondary/20">
                 <h1 className="text-2xl font-serif font-bold text-foreground">설교 관리자 모드</h1>
                 <div className="flex items-center gap-4">

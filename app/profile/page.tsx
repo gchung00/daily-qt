@@ -232,22 +232,14 @@ export default function ProfilePage() {
                 ))}
             </div>
 
-            {/* FLOATING HEADER (Back Button) */}
-            <div className="fixed top-0 right-0 w-full z-30 p-6 flex justify-between md:justify-end md:p-8 pointer-events-none">
-                {/* Optional Mobile Title on Left if needed, keeping it minimal */}
-                <div className="md:hidden opacity-0"></div>
 
-                <Link href="/" className="pointer-events-auto inline-flex items-center text-white hover:text-white bg-black/30 hover:bg-black/50 backdrop-blur-md px-5 py-2.5 rounded-full transition-all font-bold text-sm uppercase tracking-wider group border border-white/20 shadow-lg glow-sm">
-                    <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Home
-                </Link>
-            </div>
 
             {/* SCROLLING CONTENT STREAM */}
             <div className="relative z-10 w-full min-h-screen px-4 md:px-12 pb-32 pt-20">
 
                 {/* Title Section (Introduction) */}
                 <div className="min-h-[80vh] flex flex-col justify-end md:justify-center items-start md:items-end w-full max-w-7xl mx-auto pb-20 pointer-events-none">
-                    <div className="text-white text-left md:text-right drop-shadow-lg animate-in fade-in slide-in-from-bottom-10 duration-1000 p-4 rounded-xl backdrop-blur-sm bg-black/10 md:bg-transparent">
+                    <div className="text-white text-left md:text-right drop-shadow-2xl animate-in fade-in slide-in-from-bottom-10 duration-1000 p-4 rounded-xl bg-transparent">
                         <p className="text-primary-foreground/90 font-bold tracking-[0.3em] uppercase text-xl mb-4 pl-1 md:pl-0">Pastor Profile</p>
                         <h1 className="text-6xl md:text-8xl font-black font-serif leading-none tracking-tight mb-6">
                             정병성 <span className="opacity-70 font-sans font-thin tracking-normal text-5xl md:text-7xl">목사</span>
@@ -262,7 +254,7 @@ export default function ProfilePage() {
                             key={section.id}
                             data-index={index}
                             ref={(el) => { observerRefs.current[index] = el; }}
-                            className="w-full max-w-xl lg:max-w-2xl bg-white/85 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/40 transition-all duration-500 hover:bg-white/90 hover:shadow-[0_25px_60px_rgba(0,0,0,0.4)] md:mr-[5vw] lg:mr-[8vw]" // Margin Right aligns it slightly off-edge on desktop
+                            className="w-full max-w-xl lg:max-w-2xl bg-white/70 backdrop-blur-sm rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/40 transition-all duration-500 hover:bg-white/80 hover:shadow-[0_25px_60px_rgba(0,0,0,0.4)] md:mr-[5vw] lg:mr-[8vw]" // Margin Right aligns it slightly off-edge on desktop
                         >
                             {section.text}
                         </div>

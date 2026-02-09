@@ -15,8 +15,8 @@ const notoSans = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: "Sermon Webpage",
-  description: "Church Sermon Archive",
+  title: "정병성 목사 매일큐티 모음",
+  description: "정병성 목사의 매일 큐티와 설교 아카이브",
 };
 
 import { AuthProvider } from "@/components/AuthProvider";

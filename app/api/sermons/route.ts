@@ -1,8 +1,42 @@
 import { NextResponse } from 'next/server';
 import { SermonStorage } from '@/lib/storage';
 import { revalidatePath } from 'next/cache';
+import fs from 'fs';
+import path from 'path';
+import { parseSermon } from '@/lib/parser';
 
 export const dynamic = 'force-dynamic'; // Prevent caching at the route level
+
+const INDEX_FILE = path.join(process.cwd(), 'data', 'sermons-index.json');
+
+async function updateIndex(date: string, text: string | null) {
+    try {
+        if (!fs.existsSync(INDEX_FILE)) return;
+
+        const content = fs.readFileSync(INDEX_FILE, 'utf-8');
+        let index = JSON.parse(content);
+
+        if (text) {
+            // Add/Update
+            const parsed = parseSermon(text);
+            parsed.date = date; // Ensure date is set
+
+            // Remove existing entry for this date if exists
+            index = index.filter((s: any) => s.date !== date);
+            index.push(parsed);
+        } else {
+            // Delete
+            index = index.filter((s: any) => s.date !== date);
+        }
+
+        // Sort descending
+        index.sort((a: any, b: any) => b.date.localeCompare(a.date));
+
+        fs.writeFileSync(INDEX_FILE, JSON.stringify(index, null, 2));
+    } catch (e) {
+        console.error("Failed to update index:", e);
+    }
+}
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -32,6 +66,9 @@ export async function DELETE(request: Request) {
 
     try {
         await SermonStorage.deleteSermon(date);
+
+        // Update Index
+        await updateIndex(date, null);
 
         // Invalidate caches - Force refresh all pages
         revalidatePath('/', 'layout');
@@ -64,6 +101,9 @@ export async function POST(request: Request) {
                 { status: 409 }
             );
         }
+
+        // Update Index
+        await updateIndex(date, text);
 
         // Invalidate caches
         revalidatePath('/', 'layout'); // Force refresh all pages to show new content immediately

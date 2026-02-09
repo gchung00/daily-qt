@@ -1,5 +1,7 @@
 import { parseSermon, ParsedSermon } from './parser';
 import { SermonStorage } from './storage';
+import fs from 'fs';
+import path from 'path';
 
 export async function getSermon(date: string): Promise<ParsedSermon | null> {
     try {
@@ -36,11 +38,23 @@ export async function getLatestSermon(): Promise<ParsedSermon | null> {
 }
 
 export async function getAllSermons(): Promise<ParsedSermon[]> {
+    try {
+        // 1. Try reading from Index (FAST)
+        const indexPath = path.join(process.cwd(), 'data', 'sermons-index.json');
+        if (fs.existsSync(indexPath)) {
+            const fileContent = fs.readFileSync(indexPath, 'utf-8');
+            const sermons = JSON.parse(fileContent);
+            return sermons;
+        }
+    } catch (e) {
+        console.warn("Index read failed, falling back to file scan:", e);
+    }
+
+    // 2. Fallback: Slow File Scan (Original Logic)
     const dates = await getSermonDates();
     const sermons: ParsedSermon[] = [];
 
     // Concurrency Limit (Batching)
-    // Fetching 500+ files at once causes storage timeouts.
     const BATCH_SIZE = 10;
 
     for (let i = 0; i < dates.length; i += BATCH_SIZE) {
@@ -52,6 +66,5 @@ export async function getAllSermons(): Promise<ParsedSermon[]> {
         });
     }
 
-    // Sort by date descending
     return sermons.sort((a, b) => b.date.localeCompare(a.date));
 }

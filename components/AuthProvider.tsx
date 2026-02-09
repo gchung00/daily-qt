@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 interface AuthContextType {
     isAdmin: boolean;
     loading: boolean;
-    login: (pin: string) => Promise<boolean>;
+    login: (email: string, pin: string) => Promise<boolean>;
     logout: () => Promise<void>;
 }
 
@@ -39,12 +39,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    const login = async (pin: string) => {
+    const login = async (email: string, pin: string) => {
         try {
             const res = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ pin }),
+                body: JSON.stringify({ email, pin }), // Send both
             });
 
             if (res.ok) {

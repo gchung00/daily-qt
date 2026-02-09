@@ -1,13 +1,18 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
-const ADMIN_PIN = '9191';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'cbs54@hanmail.net';
+const ADMIN_PIN = process.env.ADMIN_PIN || '9191';
 
 export async function POST(request: Request) {
     try {
-        const { pin } = await request.json();
+        const { email, pin } = await request.json();
 
-        if (pin === ADMIN_PIN) {
+        // Case-insensitive email check
+        const isValidEmail = email && email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+        const isValidPin = pin === ADMIN_PIN;
+
+        if (isValidEmail && isValidPin) {
             // Set a cookie to maintain session
             const cookieStore = await cookies();
             cookieStore.set('admin_session', 'true', {
@@ -19,7 +24,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: true });
         }
 
-        return NextResponse.json({ success: false, error: 'Invalid PIN' }, { status: 401 });
+        return NextResponse.json({ success: false, error: 'Invalid Email or PIN' }, { status: 401 });
     } catch (error) {
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
     }

@@ -8,6 +8,7 @@ import { Loader2, Lock } from "lucide-react";
 export default function LoginPage() {
     const { isAdmin, loading, login } = useAuth();
     const router = useRouter();
+    const [email, setEmail] = useState('');
     const [pin, setPin] = useState('');
     const [error, setError] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,7 +23,7 @@ export default function LoginPage() {
         e.preventDefault();
         setIsSubmitting(true);
         setError(false);
-        const success = await login(pin);
+        const success = await login(email, pin);
         if (!success) {
             setError(true);
             setIsSubmitting(false);
@@ -42,31 +43,43 @@ export default function LoginPage() {
                         <Lock className="w-8 h-8 text-primary" />
                     </div>
                     <h1 className="text-2xl font-bold mb-2">관리자 접속</h1>
-                    <p className="text-muted">비밀번호를 입력해주세요</p>
+                    <p className="text-muted">관리자 계정과 비밀번호를 입력해주세요</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                        <input
-                            type="tel"
-                            value={pin}
-                            onChange={(e) => setPin(e.target.value)}
-                            placeholder="비밀번호 4자리"
-                            className="w-full text-center text-3xl font-bold tracking-[1em] py-4 border-b-2 border-gray-200 focus:border-primary outline-none transition-colors placeholder:text-gray-200 placeholder:tracking-normal placeholder:text-lg"
-                            maxLength={4}
-                            autoFocus
-                        />
+                    <div className="space-y-4">
+                        <div>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="이메일 (ID)"
+                                className="w-full text-center text-lg py-3 border-b-2 border-gray-200 focus:border-primary outline-none transition-colors placeholder:text-gray-400"
+                                required
+                                autoFocus
+                            />
+                        </div>
+                        <div>
+                            <input
+                                type="password" // Changed to password type for security UI
+                                value={pin}
+                                onChange={(e) => setPin(e.target.value)}
+                                placeholder="비밀번호 4자리"
+                                className="w-full text-center text-3xl font-bold tracking-[1em] py-4 border-b-2 border-gray-200 focus:border-primary outline-none transition-colors placeholder:text-gray-200 placeholder:tracking-normal placeholder:text-lg"
+                                maxLength={4}
+                            />
+                        </div>
                     </div>
 
                     {error && (
                         <p className="text-red-500 text-sm text-center font-medium animate-pulse">
-                            비밀번호가 올바르지 않습니다
+                            이메일 또는 비밀번호가 올바르지 않습니다
                         </p>
                     )}
 
                     <button
                         type="submit"
-                        disabled={isSubmitting || pin.length < 4}
+                        disabled={isSubmitting || pin.length < 4 || !email}
                         className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-lg"
                     >
                         {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : '접속하기'}

@@ -6,9 +6,7 @@ import { ArrowLeft, User, Play, Pause, SkipForward } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
-
-// Dynamically import ReactPlayer to avoid hydration issues
-const ReactPlayer = dynamic(() => import('react-player'), { ssr: false }) as any;
+import HlsPlayer from './HlsPlayer';
 
 export interface VideoItem {
     id: string; // YouTube ID or unique ID for HLS
@@ -91,19 +89,14 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
                                 />
                             ) : (
                                 <div className="w-full h-full absolute inset-0">
-                                    <ReactPlayer
-                                        url={currentVideo?.url}
-                                        width="100%"
-                                        height="100%"
-                                        playing={autoplay}
-                                        controls
-                                        onEnded={handleVideoEnded}
-                                        config={{
-                                            file: {
-                                                forceHLS: true,
-                                            }
-                                        } as any}
-                                    />
+                                    {currentVideo?.url && (
+                                        <HlsPlayer
+                                            src={currentVideo.url}
+                                            autoPlay={autoplay}
+                                            onEnded={handleVideoEnded}
+                                            className="w-full h-full"
+                                        />
+                                    )}
                                 </div>
                             )}
                         </div>

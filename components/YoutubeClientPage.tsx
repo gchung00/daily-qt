@@ -91,6 +91,7 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
                                 <div className="w-full h-full absolute inset-0">
                                     {currentVideo?.url && (
                                         <HlsPlayer
+                                            key={currentVideo.id}
                                             src={currentVideo.url}
                                             autoPlay={autoplay}
                                             onEnded={handleVideoEnded}

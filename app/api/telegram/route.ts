@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { SermonStorage, DraftStorage } from '@/lib/storage';
 import { revalidatePath } from 'next/cache';
 import { updateSermonIndex } from '@/lib/index-manager';
+import { list, put } from '@vercel/blob';
 
 // Environment variable check
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN?.trim();
@@ -99,8 +100,31 @@ export async function POST(request: Request) {
 
         chatId = update.message.chat.id;
         const text = update.message.text;
+        const messageId = update.message.message_id;
 
-        console.log(`Received Telegram message from Chat ID: ${chatId}`);
+        console.log(`Received Telegram message from Chat ID: ${chatId}, Message ID: ${messageId}`);
+
+        // Deduplication: Check if we've already processed this message
+        // Store message IDs in blob storage with TTL-like naming (date prefix)
+        const today = new Date().toISOString().split('T')[0];
+        const dedupKey = `dedup/${today}/${chatId}-${messageId}.txt`;
+
+        try {
+            const { blobs } = await list({ prefix: dedupKey, limit: 1 });
+            if (blobs.length > 0) {
+                console.log(`Duplicate message ${messageId} detected, ignoring.`);
+                return NextResponse.json({ status: 'ok' });
+            }
+        } catch (e) {
+            console.warn('Dedup check failed, proceeding anyway:', e);
+        }
+
+        // Mark this message as processed
+        try {
+            await put(dedupKey, 'processed', { access: 'public', addRandomSuffix: false });
+        } catch (e) {
+            console.warn('Failed to mark message as processed:', e);
+        }
 
         // Handle Commands
         if (text.trim() === '/cancel' || text.trim().toLowerCase() === 'cancel') {

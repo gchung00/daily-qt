@@ -147,6 +147,46 @@ export const SermonStorage = {
     }
 };
 
+export const DraftStorage = {
+    async saveDraft(chatId: number, text: string): Promise<void> {
+        if (process.env.BLOB_READ_WRITE_TOKEN) {
+            // Overwrite existing draft
+            await put(`drafts/${chatId}.txt`, text, {
+                access: 'public',
+                addRandomSuffix: false,
+                // @ts-ignore
+                allowOverwrite: true
+            });
+        }
+    },
+
+    async getDraft(chatId: number): Promise<string | null> {
+        if (process.env.BLOB_READ_WRITE_TOKEN) {
+            try {
+                const { blobs } = await list({ prefix: `drafts/${chatId}.txt`, limit: 1 });
+                const blob = blobs.find(b => b.pathname === `drafts/${chatId}.txt`);
+                if (blob) {
+                    const res = await fetch(blob.url);
+                    if (res.ok) return await res.text();
+                }
+            } catch (e) {
+                console.warn("Draft fetch failed", e);
+            }
+        }
+        return null;
+    },
+
+    async deleteDraft(chatId: number): Promise<void> {
+        if (process.env.BLOB_READ_WRITE_TOKEN) {
+            try {
+                const { blobs } = await list({ prefix: `drafts/${chatId}.txt` });
+                const urls = blobs.map(b => b.url);
+                if (urls.length > 0) await del(urls);
+            } catch (e) { }
+        }
+    }
+};
+
 async function ensureDir() {
     try {
         await access(SERMONS_DIR);

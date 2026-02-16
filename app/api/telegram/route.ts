@@ -32,22 +32,35 @@ function parseDate(text: string): string | null {
     // Try to find date in the first few lines (header)
     const lines = text.split('\n').slice(0, 5);
 
-    // 1. Korean Format: "X월 Y일" or "X.Y" or "X/Y"
+    // 1. Korean Format with Year: YYYY. M. D or YYYY. MM. DD
+    // e.g. "2026. 2. 15"
+    const korYearRegex = /(\d{4})[\.\s]+(\d{1,2})[\.\s]+(\d{1,2})/;
+
+    // 2. Korean Format: "X월 Y일" or "X.Y" or "X/Y"
     const korRegex = /(\d{1,2})\s*[월./]\s*(\d{1,2})\s*[일]?/;
 
-    // 2. ISO Format: YYYY-MM-DD
+    // 3. ISO Format: YYYY-MM-DD
     const isoRegex = /(\d{4})-(\d{2})-(\d{2})/;
 
-    // 3. English Format: DD-MMM-YYYY or DD MMM YYYY (e.g. 12-Feb-2026 or 12 Feb 2026)
+    // 4. English Format: DD-MMM-YYYY or DD MMM YYYY (e.g. 12-Feb-2026 or 12 Feb 2026)
     const engRegex = /(\d{1,2})[\s-]([a-zA-Z]{3})[\s-](\d{4})/;
 
-    // 4. English Short Format: DD MMM (e.g. 12 Feb) -> Current Year
+    // 5. English Short Format: DD MMM (e.g. 12 Feb) -> Current Year
     const engShortRegex = /(\d{1,2})[\s-]([a-zA-Z]{3})/;
 
     for (const line of lines) {
-        // Check ISO first (most precise)
+        // Check ISO first
         const isoMatch = line.match(isoRegex);
         if (isoMatch) return isoMatch[0];
+
+        // Check Korean Year format (YYYY. M. D)
+        const korYearMatch = line.match(korYearRegex);
+        if (korYearMatch) {
+            const year = korYearMatch[1];
+            const month = korYearMatch[2].padStart(2, '0');
+            const day = korYearMatch[3].padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
 
         // Check English Full
         const engMatch = line.match(engRegex);
@@ -58,7 +71,7 @@ function parseDate(text: string): string | null {
             }
         }
 
-        // Check Korean
+        // Check Korean (No Year)
         const korMatch = line.match(korRegex);
         if (korMatch) {
             const month = korMatch[1].padStart(2, '0');
@@ -104,8 +117,7 @@ export async function POST(request: Request) {
 
         console.log(`Received Telegram message from Chat ID: ${chatId}, Message ID: ${messageId}`);
 
-        // Deduplication: Check if we've already processed this message
-        // Store message IDs in blob storage with TTL-like naming (date prefix)
+        // Deduplication
         const today = new Date().toISOString().split('T')[0];
         const dedupKey = `dedup/${today}/${chatId}-${messageId}.txt`;
 
@@ -119,11 +131,11 @@ export async function POST(request: Request) {
             console.warn('Dedup check failed, proceeding anyway:', e);
         }
 
-        // Mark this message as processed
+        // Mark processed
         try {
             await put(dedupKey, 'processed', { access: 'public', addRandomSuffix: false });
         } catch (e) {
-            console.warn('Failed to mark message as processed:', e);
+            console.warn('Failed to mark processed:', e);
         }
 
         // Handle Commands
@@ -142,16 +154,15 @@ export async function POST(request: Request) {
 
 📖 **설교 업로드 방법 (How to Upload):**
 1. 설교 본문을 보내주세요. (Send sermon text)
-   (첫 줄에 날짜가 있으면 즉시 저장됩니다.)
+   - 첫 부분에 날짜(예: 2026. 2. 16)가 있으면 즉시 저장됩니다.
    
-2. 날짜가 없으면 **드래프트(임시저장)** 됩니다.
-   (Draft saved if no date)
-   
-3. 드래프트 상태에서 **날짜만 보내면** 저장됩니다.
-   (Reply with date to finish)
+2. **긴 설교 (Long Sermons):**
+   - 두 번 이상 나누어 보낼 때:
+     1) 본문을 나누어 보내세요. (Draft 저장됨)
+     2) 마지막에 **날짜를 다시 보내세요**.
+     (이미 저장된 날짜라면 자동으로 **이어붙입니다**.)
 
-🚫 **취소하려면 (To Cancel):**
-- \`/cancel\` 입력 시 드래프트 삭제`);
+🚫 **취소하려면:** /cancel`);
             }
             return NextResponse.json({ status: 'ok' });
         }
@@ -163,21 +174,23 @@ export async function POST(request: Request) {
             // DATE FOUND
             console.log(`Date found: ${date}`);
 
-            // Check if there is a pending draft
             let contentToSave = text;
             let isUsingDraft = false;
 
-            // If message is SHORT (< 100), assume it's a date for the DRAFT
-            if (text.length < 100 && chatId) {
+            // Priority: Check Draft first.
+            // If the message is SHORT (just providing date), use Draft.
+            // If the message is LONG, it might be the sermon itself (with header).
+
+            if (text.length < 200 && chatId) {
                 const draft = await DraftStorage.getDraft(chatId);
                 if (draft) {
                     console.log('Found pending draft. Merging with date.');
-                    contentToSave = draft;
+                    contentToSave = draft; // Use draft content
                     isUsingDraft = true;
                 }
             }
 
-            // Save Sermon
+            // Attempt Save
             const success = await SermonStorage.saveSermon(date, contentToSave, false);
 
             if (success) {
@@ -193,26 +206,58 @@ export async function POST(request: Request) {
                     }
                 }
             } else {
-                if (chatId) await sendTelegramMessage(chatId, `❌ 저장 실패: ${date}에 이미 설교가 존재합니다.`);
+                // FAILURE: File Exists
+                // If we were using a Draft, OR if the user is explicitly trying to append?
+
+                if (chatId) {
+                    // Try APPEND logic
+                    // If user is trying to save a Draft to an existing date, likely they want to append (Part 2).
+                    // Or if they sent text that got parsed as date?
+
+                    if (isUsingDraft) {
+                        // User sent Part 1 (saved). User sent Part 2 (draft). User sent Date.
+                        // Append Draft to Existing File.
+                        const existingContent = await SermonStorage.getSermon(date);
+                        if (existingContent) {
+                            const combinedContent = existingContent + "\n\n" + contentToSave;
+                            await SermonStorage.saveSermon(date, combinedContent, true); // Force Correct
+                            await updateSermonIndex(date, combinedContent).catch(e => console.error(e));
+                            revalidatePath('/', 'layout');
+
+                            await DraftStorage.deleteDraft(chatId);
+                            await sendTelegramMessage(chatId, `✚ 기존 설교에 이어붙였습니다! (Appended to Existing)\n📅 날짜: ${date}`);
+                            return NextResponse.json({ status: 'ok' });
+                        }
+                    }
+
+                    await sendTelegramMessage(chatId, `❌ 저장 실패: ${date}에 이미 설교가 존재합니다.`);
+                }
             }
 
         } else {
-            // DATE NOT FOUND -> Save as Draft
-            console.log('No date found. Saving as draft.');
+            // DATE NOT FOUND -> Append to Draft
+            console.log('No date found. Appending to draft.');
 
             if (chatId) {
+                // Check if draft exists BEFORE saving (to customize message)
+                const existingDraft = await DraftStorage.getDraft(chatId);
+
                 await DraftStorage.saveDraft(chatId, text);
 
-                await sendTelegramMessage(chatId,
-                    `⚠️ 날짜를 찾을 수 없습니다 (No date found).
+                if (existingDraft) {
+                    await sendTelegramMessage(chatId,
+                        `📝 **드래프트에 추가되었습니다** (Added to Draft).
+(총 길이: ${(existingDraft.length + text.length + 1).toLocaleString()} 자)
+- 계속 추가하거나, **날짜를 보내서** 저장하세요.`);
+                } else {
+                    await sendTelegramMessage(chatId,
+                        `⚠️ 날짜를 찾을 수 없습니다 (No date found).
 📝 본문을 **임시 저장**했습니다 (Text saved as draft).
 
 👇 **다음 단계 (Next Steps):**
-1. **날짜를 답장**으로 보내주세요 (e.g. 12 Feb, 2월 12일).
-   (Reply with date to save)
-   
-2. 또는 **/cancel** 을 입력하여 취소하세요.
-   (Type /cancel to discard)`);
+1. 긴 내용이면 **계속 보내세요** (Appends to draft).
+2. 다 보냈으면 **날짜를 보내세요** (Reply with date).`);
+                }
             }
         }
 
@@ -220,10 +265,7 @@ export async function POST(request: Request) {
 
     } catch (error: any) {
         console.error('Telegram Webhook Error:', error);
-
-        if (chatId) {
-            await sendTelegramMessage(chatId, `⚠️ 오류가 발생했습니다: ${error.message}`);
-        }
+        if (chatId) await sendTelegramMessage(chatId, `⚠️ 오류: ${error.message}`);
         return NextResponse.json({ status: 'error', message: error.message });
     }
 }

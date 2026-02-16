@@ -150,8 +150,19 @@ export const SermonStorage = {
 export const DraftStorage = {
     async saveDraft(chatId: number, text: string): Promise<void> {
         if (process.env.BLOB_READ_WRITE_TOKEN) {
-            // Overwrite existing draft
-            await put(`drafts/${chatId}.txt`, text, {
+            // Check for existing draft to append
+            let newText = text;
+            try {
+                const existing = await this.getDraft(chatId);
+                if (existing) {
+                    newText = existing + '\n' + text;
+                }
+            } catch (e) {
+                console.warn("Failed to check existing draft, overwriting:", e);
+            }
+
+            // Overwrite existing draft with combined text
+            await put(`drafts/${chatId}.txt`, newText, {
                 access: 'public',
                 addRandomSuffix: false,
                 // @ts-ignore

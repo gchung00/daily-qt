@@ -39,30 +39,34 @@ function SermonSectionComponent({
     isLast: boolean,
     prevType?: string
 }) {
-    // Helper to determine if we should skip the top border to avoid double lines
-    const hasSharedBorder = prevType === 'hymn' || prevType === 'scripture_main' || prevType === 'scripture_quote' || prevType === 'benediction' || (prevType === 'text' && section.type === 'text');
+    // Helper to determine if we should skip the top divider to avoid double lines or excessive gaps
+    const isSequentialContent = (prevType === 'scripture_main' && section.type === 'scripture_main') ||
+        (prevType === 'scripture_quote' && section.type === 'scripture_quote') ||
+        (prevType === 'hymn' && section.type === 'hymn');
+
+    const needsDivider = !isFirst && !isSequentialContent && section.type !== 'header';
 
     switch (section.type) {
         case 'header':
             return (
                 <div className={clsx(
-                    "text-center mb-16 pt-12 pb-12",
-                    isSunday ? "space-y-8" : "hairline-b"
+                    "text-center mb-12 pt-8 pb-8",
+                    isSunday ? "space-y-6" : "hairline-b"
                 )}>
                     <h1 className={clsx(
                         "font-normal tracking-tight text-foreground leading-tight serif-emphasis",
-                        isSunday ? "text-5xl sm:text-7xl mb-4" : "text-5xl sm:text-6xl mb-8"
+                        isSunday ? "text-5xl sm:text-7xl mb-2" : "text-5xl sm:text-6xl mb-6"
                     )}>
                         {section.content}
                     </h1>
-                    <p className="text-muted/40 text-[10px] tracking-[0.5em] uppercase font-light">The Daily Devotion</p>
+                    <p className="text-muted/30 text-[10px] tracking-[0.5em] uppercase font-light">The Daily Devotion</p>
                 </div>
             );
 
         case 'hymn':
             return (
-                <div className="mb-0 pt-12 pb-12">
-                    {!hasSharedBorder && <div className="hairline-t mb-12 opacity-50" />}
+                <div className="py-8">
+                    {needsDivider && <div className="hairline-t mb-12 opacity-30" />}
                     <div className="flex items-center gap-4 mb-6">
                         <span className="font-serif text-3xl text-primary font-normal opacity-30 italic">I</span>
                         <h3 className="text-2xl font-normal text-foreground serif-emphasis">찬송가</h3>
@@ -93,7 +97,6 @@ function SermonSectionComponent({
                             </div>
                         </div>
                     </a>
-                    {isLast && <div className="hairline-t mt-12 opacity-50" />}
                 </div>
             );
 
@@ -119,24 +122,24 @@ function SermonSectionComponent({
 
         case 'scripture_main':
             return (
-                <div className="mb-0">
-                    {!hasSharedBorder && <div className="hairline-t opacity-50" />}
+                <div className="py-4">
+                    {needsDivider && <div className="hairline-t opacity-30" />}
                     <div className={clsx(
-                        "my-16 sm:my-24 py-20 px-8 sm:px-12 relative text-center",
+                        "my-8 sm:my-12 py-12 px-8 sm:px-12 relative text-center",
                         isSunday ? "bg-[#f37021]/5 sm:rounded-[3.5rem] shadow-sm hairline" : ""
                     )}>
                         {/* Decorative element for Sunday */}
-                        {isSunday && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-primary/20 rounded-full mt-8"></div>}
+                        {isSunday && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-primary/20 rounded-full mt-6"></div>}
 
                         <div className="max-w-3xl mx-auto relative z-10">
                             <p className={clsx(
-                                "font-normal leading-relaxed text-foreground mb-16 text-pretty serif-emphasis",
+                                "font-normal leading-relaxed text-foreground mb-12 text-pretty serif-emphasis",
                                 isSunday ? "text-3xl sm:text-5xl" : "text-2xl sm:text-3xl"
                             )}>
                                 {section.text}
                             </p>
                             <div className={clsx(
-                                "inline-block border-t pt-8",
+                                "inline-block border-t pt-6",
                                 isSunday ? "border-primary/30" : "border-primary/10"
                             )}>
                                 <p className={clsx(
@@ -148,7 +151,6 @@ function SermonSectionComponent({
                             </div>
                         </div>
                     </div>
-                    {isLast && <div className="hairline-t opacity-50" />}
                 </div>
             );
 
@@ -172,13 +174,12 @@ function SermonSectionComponent({
 
         case 'scripture_quote':
             return (
-                <div className="mb-0">
-                    {!hasSharedBorder && <div className="hairline-t opacity-50" />}
-                    <div className="my-16 py-12 text-center italic">
-                        <p className="text-xl text-foreground/70 serif-emphasis leading-loose mb-6 font-normal max-w-2xl mx-auto">"{section.content}"</p>
+                <div className="py-4">
+                    {needsDivider && <div className="hairline-t opacity-30" />}
+                    <div className="my-8 py-8 text-center italic">
+                        <p className="text-xl text-foreground/70 serif-emphasis leading-loose mb-4 font-normal max-w-2xl mx-auto px-6">"{section.content}"</p>
                         <span className="text-xs font-normal text-primary/40 uppercase tracking-[0.4em]">{section.reference}</span>
                     </div>
-                    {isLast && <div className="hairline-t opacity-50" />}
                 </div>
             );
 

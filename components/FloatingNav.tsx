@@ -34,7 +34,7 @@ export default function FloatingNav() {
         <nav
             className={cn(
                 "fixed top-0 left-0 w-full z-50 transition-all duration-300",
-                (scrolled || !isHome) && pathname !== "/profile" && pathname !== "/sermons" && pathname !== "/youtube" ? "bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100/50 py-2" : "bg-transparent py-4"
+                (scrolled || !isHome) && pathname !== "/profile" && pathname !== "/youtube" ? "bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100/50 py-2" : "bg-transparent py-4"
             )}
         >
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-[1fr_auto_1fr] items-center">
@@ -45,12 +45,11 @@ export default function FloatingNav() {
                 {/* Center: Main Menu */}
                 <div className={cn(
                     "flex flex-wrap items-center justify-center gap-1 sm:gap-2 p-1 rounded-full sm:p-0 transition-all duration-300",
-                    pathname === "/profile" || pathname === "/sermons" || pathname === "/youtube" ? "bg-white/90 backdrop-blur-md shadow-sm px-4 py-2" : "bg-white/50 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none"
+                    pathname === "/profile" || pathname === "/youtube" ? "bg-white/90 backdrop-blur-md shadow-sm px-4 py-2" : "bg-white/50 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none"
                 )}>
                     <NavLink href="/" icon={<Home className="w-4 h-4 sm:w-5 sm:h-5" />} label="" />
-                    <NavLink href="/sermons" icon={<List className="w-4 h-4 sm:w-5 sm:h-5" />} label="전체 말씀" />
-                    <div onClick={handleCalendar} className="cursor-pointer">
-                        <NavLink href="/#calendar" icon={<Calendar className="w-4 h-4 sm:w-5 sm:h-5" />} label="달력 보기" />
+                    <div onClick={handleCalendar} className="contents cursor-pointer">
+                        <NavLink href="#calendar" icon={<Calendar className="w-4 h-4 sm:w-5 sm:h-5" />} label="달력 보기" />
                     </div>
                     <NavLink href="/youtube" icon={<Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />} label="영상 설교" highlight />
                     <NavLink href="/profile" icon={<User className="w-4 h-4 sm:w-5 sm:h-5" />} label="목사님 소개" />

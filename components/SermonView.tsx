@@ -8,23 +8,32 @@ interface SermonViewProps {
 }
 
 export function SermonView({ sermon, className }: SermonViewProps) {
+    const isSunday = sermon.date ? new Date(sermon.date).getDay() === 0 : false;
+
     return (
-        <div className={twMerge("max-w-4xl mx-auto space-y-10 py-10", className)}>
+        <div className={twMerge("max-w-4xl mx-auto space-y-10 py-10 px-4 sm:px-0", className)}>
             {sermon.sections.map((section, idx) => (
-                <SermonSectionComponent key={idx} section={section} />
+                <SermonSectionComponent key={idx} section={section} isSunday={isSunday} />
             ))}
         </div>
     );
 }
 
-function SermonSectionComponent({ section }: { section: SermonSection }) {
+function SermonSectionComponent({ section, isSunday }: { section: SermonSection, isSunday?: boolean }) {
     switch (section.type) {
         case 'header':
             return (
-                <div className="text-center mb-16 pt-8 border-b border-primary/10 pb-8">
-
-                    <h1 className="text-5xl sm:text-6xl font-black tracking-tight text-foreground mb-6 leading-tight serif-emphasis">{section.content}</h1>
-                    <p className="text-muted text-xl font-medium italic serif-emphasis">"오늘의 고백과 찬양으로 주님 앞에 나아갑니다"</p>
+                <div className={clsx(
+                    "text-center mb-16 pt-12 pb-12",
+                    isSunday ? "space-y-8" : "hairline-b"
+                )}>
+                    <h1 className={clsx(
+                        "font-normal tracking-tight text-foreground leading-tight serif-emphasis",
+                        isSunday ? "text-5xl sm:text-7xl mb-4" : "text-5xl sm:text-6xl mb-8"
+                    )}>
+                        {section.content}
+                    </h1>
+                    <p className="text-muted/40 text-[10px] tracking-[0.5em] uppercase font-light">The Daily Devotion</p>
                 </div>
             );
 
@@ -32,24 +41,32 @@ function SermonSectionComponent({ section }: { section: SermonSection }) {
             return (
                 <div className="mb-12">
                     <div className="flex items-center gap-4 mb-6">
-                        <span className="font-serif text-3xl text-primary font-bold opacity-30">I</span>
-                        <h3 className="text-2xl font-bold text-foreground">찬송가</h3>
-                        <span className="text-xs text-primary uppercase tracking-widest font-bold mt-1 bg-white/40 px-2 py-0.5 rounded-sm">Hymn</span>
+                        <span className="font-serif text-3xl text-primary font-normal opacity-30 italic">I</span>
+                        <h3 className="text-2xl font-normal text-foreground serif-emphasis">찬송가</h3>
+                        <span className="text-[10px] text-primary/60 uppercase tracking-[0.3em] font-light mt-1">Hymn</span>
                     </div>
 
                     <a
                         href={`https://www.youtube.com/results?search_query=${encodeURIComponent(section.content)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block"
+                        className="block group"
                     >
-                        <div className="bg-white/80 p-6 sm:p-8 rounded-sm border-l-2 border-primary/60 hover:border-primary transition-all shadow-sm hover:shadow-glow flex items-start gap-6 group cursor-pointer backdrop-blur-sm">
-                            <div className="mt-1 w-12 h-12 rounded-full bg-secondary/50 flex items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
-                                <span className="font-serif font-bold text-xl">♪</span>
+                        <div className="py-8 px-6 sm:px-10 rounded-[2rem] hairline bg-primary/[0.01] group-hover:bg-primary/[0.04] transition-all duration-300 flex items-center justify-between cursor-pointer border-transparent group-hover:border-primary/10">
+                            <div className="flex items-center gap-8">
+                                <div className="w-12 h-12 rounded-full bg-white shadow-sm hairline flex items-center justify-center text-primary/60 group-hover:scale-110 group-hover:text-primary transition-all">
+                                    <span className="font-serif font-light text-2xl">♪</span>
+                                </div>
+                                <div>
+                                    <p className="font-normal text-xl text-foreground group-hover:text-primary transition-colors serif-emphasis">{section.content}</p>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                                        <p className="text-[10px] text-primary font-medium tracking-[0.2em] uppercase">Listen on YouTube</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="flex-1">
-                                <p className="font-bold text-xl text-foreground mb-2 group-hover:text-primary transition-colors">{section.content}</p>
-                                <p className="text-sm text-muted tracking-wide font-medium">누르면 유튜브에서 듣기</p>
+                            <div className="w-10 h-10 rounded-full hairline flex items-center justify-center text-primary/20 group-hover:text-primary group-hover:bg-white transition-all">
+                                <span className="text-xl">→</span>
                             </div>
                         </div>
                     </a>
@@ -59,8 +76,8 @@ function SermonSectionComponent({ section }: { section: SermonSection }) {
         case 'prayer_title':
             return (
                 <div className="mt-16 mb-6">
-                    <h3 className="text-xl font-bold text-primary flex gap-3">
-                        <span className="w-0.5 shrink-0 rounded-full bg-[#f37021]/60"></span>
+                    <h3 className="text-xl font-normal text-primary flex gap-3 serif-emphasis">
+                        <span className="w-px shrink-0 bg-[#f37021]/60"></span>
                         <span className="py-1">{section.content}</span>
                     </h3>
                 </div>
@@ -69,8 +86,8 @@ function SermonSectionComponent({ section }: { section: SermonSection }) {
         case 'prayer_item':
             return (
                 <div className="flex gap-4 mb-4 pl-4 group">
-                    <span className="font-bold text-primary/60 text-lg w-6 shrink-0 text-right group-hover:text-primary transition-colors font-serif">{section.number}.</span>
-                    <p className="text-lg text-foreground/90 leading-relaxed font-medium">
+                    <span className="font-normal text-primary/40 text-lg w-6 shrink-0 text-right group-hover:text-primary transition-colors font-serif">{section.number}.</span>
+                    <p className="text-lg text-foreground/80 leading-relaxed font-normal">
                         {section.content}
                     </p>
                 </div>
@@ -78,17 +95,32 @@ function SermonSectionComponent({ section }: { section: SermonSection }) {
 
         case 'scripture_main':
             return (
-                <div className="my-20 bg-white/60 p-10 rounded-sm relative text-center border-t-2 border-primary/40 shadow-sm backdrop-blur-sm">
-                    <span className="text-6xl text-primary/10 font-serif absolute top-4 left-6">“</span>
-                    <div className="relative z-10">
-                        <p className="font-medium text-2xl sm:text-3xl leading-relaxed text-foreground mb-8 text-pretty serif-emphasis">
+                <div className={clsx(
+                    "my-16 sm:my-24 py-20 px-8 sm:px-12 relative text-center",
+                    isSunday ? "bg-[#f37021]/5 sm:rounded-[3.5rem] shadow-sm hairline" : "hairline-t hairline-b"
+                )}>
+                    {/* Decorative element for Sunday */}
+                    {isSunday && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-primary/20 rounded-full mt-8"></div>}
+
+                    <div className="max-w-3xl mx-auto relative z-10">
+                        <p className={clsx(
+                            "font-normal leading-relaxed text-foreground mb-16 text-pretty serif-emphasis",
+                            isSunday ? "text-3xl sm:text-5xl" : "text-2xl sm:text-3xl"
+                        )}>
                             {section.text}
                         </p>
-                        <div className="inline-block border-t border-primary/20 pt-4">
-                            <p className="font-bold text-primary tracking-widest uppercase text-sm">{section.reference}</p>
+                        <div className={clsx(
+                            "inline-block border-t pt-8",
+                            isSunday ? "border-primary/30" : "border-primary/10"
+                        )}>
+                            <p className={clsx(
+                                "font-medium tracking-[0.5em] uppercase",
+                                isSunday ? "text-primary text-sm" : "text-primary/60 text-[10px]"
+                            )}>
+                                {section.reference}
+                            </p>
                         </div>
                     </div>
-                    <span className="text-6xl text-primary/10 font-serif absolute bottom-[-20px] right-6">”</span>
                 </div>
             );
 
@@ -104,24 +136,24 @@ function SermonSectionComponent({ section }: { section: SermonSection }) {
 
         case 'point_title':
             return (
-                <h2 className="text-3xl font-bold text-foreground mt-20 mb-8 flex items-center gap-4">
-                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary text-primary text-base font-bold">{section.number}</span>
+                <h2 className="text-3xl font-normal text-foreground mt-20 mb-8 flex items-center gap-4 serif-emphasis">
+                    <span className="text-primary/40 text-2xl font-light">{section.number}.</span>
                     {section.content}
                 </h2>
             );
 
         case 'scripture_quote':
             return (
-                <div className="my-8 pl-6 border-l-2 border-primary/40 bg-white/40 py-4 pr-4 rounded-r-sm">
-                    <p className="text-lg text-foreground/80 italic serif-emphasis leading-relaxed mb-2">"{section.content}"</p>
-                    <span className="text-xs font-bold text-primary uppercase tracking-wide block text-right">{section.reference}</span>
+                <div className="my-12 py-8 hairline-t hairline-b text-center italic">
+                    <p className="text-lg text-foreground/70 serif-emphasis leading-loose mb-4 font-normal max-w-2xl mx-auto">"{section.content}"</p>
+                    <span className="text-[10px] font-normal text-primary/40 uppercase tracking-[0.3em]">{section.reference}</span>
                 </div>
             );
 
         case 'benediction':
             return (
-                <div className="mt-24 p-12 text-center border-y border-primary/10 bg-white/30 backdrop-blur-sm">
-                    <p className="serif-emphasis text-2xl font-bold text-primary leading-relaxed">{section.content}</p>
+                <div className="mt-28 py-16 text-center hairline-t hairline-b">
+                    <p className="serif-emphasis text-2xl font-normal text-primary/80 leading-relaxed italic">{section.content}</p>
                 </div>
             );
 
@@ -130,21 +162,21 @@ function SermonSectionComponent({ section }: { section: SermonSection }) {
             if (section.content === '신앙고백') {
                 return (
                     <div className="flex items-center gap-4 mb-6 mt-12">
-                        <span className="font-serif text-3xl text-primary font-bold opacity-30">0</span>
-                        <h3 className="text-2xl font-bold text-foreground">{section.content}</h3>
-                        <span className="text-xs text-primary uppercase tracking-widest font-bold mt-0.5">Confession</span>
+                        <span className="font-serif text-3xl text-primary font-normal opacity-30">0</span>
+                        <h3 className="text-2xl font-normal text-foreground serif-emphasis">{section.content}</h3>
+                        <span className="text-[10px] text-primary/60 uppercase tracking-[0.3em] font-normal mt-0.5">Confession</span>
                     </div>
                 );
             }
             if (section.content.startsWith('전능하사')) {
                 return (
-                    <div className="bg-white/60 p-8 rounded-sm mb-16 shadow-sm border border-secondary/50 backdrop-blur-sm">
-                        <p className="text-lg text-foreground/90 leading-9 text-justify font-medium">
+                    <div className="py-12 hairline-t hairline-b mb-16 text-center italic">
+                        <p className="text-lg text-foreground/70 leading-relaxed font-normal max-w-2xl mx-auto">
                             {section.content}
                         </p>
                     </div>
                 );
             }
-            return <p className="leading-8 mb-6 text-foreground/80 text-lg font-medium">{section.content}</p>;
+            return <p className="leading-8 mb-6 text-foreground/80 text-lg font-normal">{section.content}</p>;
     }
 }

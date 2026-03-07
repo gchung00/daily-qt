@@ -51,11 +51,11 @@ export function CalendarWidget({ sermonDates, selectedDate, onDateSelect }: Cale
     };
 
     return (
-        <div className="w-full text-white/90">
-            <div className="flex items-center justify-between mb-6">
+        <div className="w-full text-foreground/80">
+            <div className="flex items-center justify-between mb-12">
                 <button
                     onClick={viewMode === 'month' ? prevMonth : prevYearPage}
-                    className="p-2 hover:bg-white/10 rounded-full transition-colors text-white/60 hover:text-white"
+                    className="p-2 hover:bg-black/5 rounded-full transition-colors text-muted hover:text-foreground"
                     aria-label="Previous"
                 >
                     <ChevronLeft className="w-5 h-5" />
@@ -63,7 +63,7 @@ export function CalendarWidget({ sermonDates, selectedDate, onDateSelect }: Cale
 
                 <h2
                     onClick={handleHeaderClick}
-                    className="font-bold text-xl tracking-tight cursor-pointer hover:text-white transition-colors select-none"
+                    className="font-normal text-2xl tracking-tighter cursor-pointer hover:text-primary transition-colors select-none serif-emphasis"
                 >
                     {viewMode === 'month'
                         ? format(currentMonth, 'yyyy년 M월', { locale: ko })
@@ -73,7 +73,7 @@ export function CalendarWidget({ sermonDates, selectedDate, onDateSelect }: Cale
 
                 <button
                     onClick={viewMode === 'month' ? nextMonth : nextYearPage}
-                    className="p-2 hover:bg-white/10 rounded-full transition-colors text-white/60 hover:text-white"
+                    className="p-2 hover:bg-black/5 rounded-full transition-colors text-muted hover:text-foreground"
                     aria-label="Next"
                 >
                     <ChevronRight className="w-5 h-5" />
@@ -81,22 +81,25 @@ export function CalendarWidget({ sermonDates, selectedDate, onDateSelect }: Cale
             </div>
 
             {viewMode === 'month' ? (
-                <>
-                    <div className="grid grid-cols-7 mb-4 text-center">
+                <div className="hairline rounded-3xl overflow-hidden bg-white/40 shadow-sm transition-all hover:bg-white/60">
+                    <div className="grid grid-cols-7 border-b border-primary/5">
                         {weekDays.map(day => (
-                            <div key={day} className="text-xs font-bold text-white/40 uppercase tracking-wider py-1">
+                            <div key={day} className="text-[10px] font-medium text-muted/50 uppercase tracking-[0.2em] py-4 text-center">
                                 {day}
                             </div>
                         ))}
                     </div>
 
-                    <div className="grid grid-cols-7 gap-2">
-                        {days.map(day => {
+                    <div className="grid grid-cols-7">
+                        {days.map((day, idx) => {
                             const dateStr = format(day, 'yyyy-MM-dd');
                             const hasSermon = sermonDates.includes(dateStr);
                             const isSelected = selectedDate && isSameDay(day, selectedDate);
                             const isCurrentMonth = isSameMonth(day, monthStart);
                             const isToday = isSameDay(day, new Date());
+
+                            const isFirstInRow = idx % 7 === 0;
+                            const isLastInRow = idx % 7 === 6;
 
                             return (
                                 <button
@@ -104,24 +107,33 @@ export function CalendarWidget({ sermonDates, selectedDate, onDateSelect }: Cale
                                     onClick={() => {
                                         if (hasSermon) onDateSelect(day);
                                     }}
-                                    // Disabled logic can remain visual only to maintain grid
                                     className={clsx(
-                                        "h-10 w-10 flex flex-col items-center justify-center rounded-xl text-sm transition-all relative border border-transparent",
-                                        !isCurrentMonth && "text-white/10",
-                                        isCurrentMonth && !hasSermon && "text-white/60 hover:bg-white/5",
-                                        hasSermon && isCurrentMonth && "font-bold text-white bg-indigo-950 hover:bg-orange-700 border-white/10 cursor-pointer shadow-sm",
-                                        isSelected && "!bg-orange-600 !text-white shadow-glow", // Selected matches the warm hover tone or distinct? I'll make it orange-600 distinct.
-                                        isToday && !isSelected && "!bg-white !text-indigo-950 font-serif font-bold shadow-md"
+                                        "h-16 w-full flex flex-col items-center justify-center text-sm transition-all relative border-primary/5",
+                                        !isLastInRow && "border-r",
+                                        idx < days.length - 7 && "border-b",
+                                        !isCurrentMonth && "bg-black/[0.01] text-muted/20",
+                                        isCurrentMonth && !hasSermon && "text-muted/40",
+                                        hasSermon && isCurrentMonth && "font-medium text-foreground hover:bg-primary/[0.03] cursor-pointer",
+                                        isSelected && "!bg-primary !text-white z-10",
+                                        isToday && !isSelected && "after:content-[''] after:absolute after:bottom-3 after:w-1 after:h-1 after:rounded-full after:bg-primary"
                                     )}
                                 >
-                                    <span>{format(day, 'd')}</span>
+                                    <span className={clsx(
+                                        "text-lg",
+                                        hasSermon && "relative"
+                                    )}>
+                                        {format(day, 'd')}
+                                        {hasSermon && !isSelected && (
+                                            <span className="absolute -top-1 -right-2 w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse"></span>
+                                        )}
+                                    </span>
                                 </button>
                             );
                         })}
                     </div>
-                </>
+                </div>
             ) : (
-                <div className="grid grid-cols-3 gap-4 py-2">
+                <div className="grid grid-cols-3 gap-1 hairline rounded-3xl overflow-hidden">
                     {Array.from({ length: 12 }, (_, i) => yearRangeStart + i).map(year => {
                         const hasSermonInYear = sermonDates.some(d => d.startsWith(`${year}-`));
                         const isCurrentYear = year === currentMonth.getFullYear();
@@ -132,11 +144,10 @@ export function CalendarWidget({ sermonDates, selectedDate, onDateSelect }: Cale
                                 key={year}
                                 onClick={() => handleYearSelect(year)}
                                 className={clsx(
-                                    "h-12 flex items-center justify-center rounded-xl text-lg font-bold transition-all relative",
-                                    isCurrentYear && "bg-white/20 text-white shadow-sm",
-                                    !isCurrentYear && "text-white/70 hover:bg-white/10 hover:text-white",
-                                    hasSermonInYear && !isCurrentYear && "text-white ring-1 ring-white/20",
-                                    isActualCurrentYear && !isCurrentYear && "bg-white !text-indigo-950 shadow-md" // Highlight actual current year if not selected
+                                    "h-24 flex items-center justify-center text-xl font-normal transition-all relative hover:bg-primary/[0.03]",
+                                    isCurrentYear && "bg-primary text-white",
+                                    !isCurrentYear && "text-foreground/60",
+                                    hasSermonInYear && !isCurrentYear && "text-primary font-medium"
                                 )}
                             >
                                 {year}

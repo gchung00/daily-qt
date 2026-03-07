@@ -3,7 +3,9 @@ import { SermonStorage } from './storage';
 import fs from 'fs';
 import path from 'path';
 
-export async function getSermon(date: string): Promise<ParsedSermon | null> {
+import { unstable_cache } from 'next/cache';
+
+export const getSermon = unstable_cache(async (date: string): Promise<ParsedSermon | null> => {
     try {
         const rawText = await SermonStorage.getSermon(date);
         if (!rawText) return null;
@@ -15,18 +17,18 @@ export async function getSermon(date: string): Promise<ParsedSermon | null> {
         console.error(`Error reading sermon for ${date}:`, error);
         return null;
     }
-}
+}, ['sermons-get'], { tags: ['sermons'] });
 
-// Previously used unstable_cache here, but removed it to ensure fresh data after uploads.
-// Direct fetch from storage is fast enough for now (list operation).
-export async function getSermonDates(): Promise<string[]> {
+// We use unstable_cache heavily here to prevent Vercel Blob Advanced Ops billing issues
+// Revalidation happens on POST/DELETE via revalidateTag('sermons')
+export const getSermonDates = unstable_cache(async (): Promise<string[]> => {
     try {
         return await SermonStorage.listSermons();
     } catch (error) {
         console.error('Error listing sermons:', error);
         return [];
     }
-}
+}, ['sermons-list'], { tags: ['sermons'] });
 
 export async function getLatestSermon(): Promise<ParsedSermon | null> {
     const dates = await getSermonDates();

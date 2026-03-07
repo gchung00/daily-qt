@@ -37,7 +37,7 @@ export async function DELETE(request: Request) {
         // Update Index
         await updateSermonIndex(date, null);
 
-        // Invalidate caches - Force refresh all pages
+        // Invalidate caches - Force refresh all pages and fetch results
         revalidatePath('/', 'layout');
 
         return NextResponse.json({ success: true });

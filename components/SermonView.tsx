@@ -122,24 +122,23 @@ function SermonSectionComponent({
 
         case 'scripture_main':
             return (
-                <div className="py-4">
-                    {needsDivider && <div className="hairline-t opacity-30" />}
+                <div className="border-0">
+                    {needsDivider && <div className="hairline-t opacity-20 mb-4" />}
                     <div className={clsx(
-                        "my-8 sm:my-12 py-12 px-8 sm:px-12 relative text-center",
-                        isSunday ? "bg-[#f37021]/5 sm:rounded-[3.5rem] shadow-sm hairline" : ""
+                        isSunday ? "my-8 sm:my-12 py-12 px-8 sm:px-12 bg-[#f37021]/5 sm:rounded-[3.5rem] shadow-sm hairline" : "my-2 py-4 px-6 relative text-center"
                     )}>
                         {/* Decorative element for Sunday */}
                         {isSunday && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-primary/20 rounded-full mt-6"></div>}
 
                         <div className="max-w-3xl mx-auto relative z-10">
                             <p className={clsx(
-                                "font-normal leading-relaxed text-foreground mb-12 text-pretty serif-emphasis",
-                                isSunday ? "text-3xl sm:text-5xl" : "text-2xl sm:text-3xl"
+                                "font-normal leading-relaxed text-foreground text-pretty serif-emphasis",
+                                isSunday ? "text-3xl sm:text-5xl mb-12" : "text-2xl sm:text-3xl mb-8"
                             )}>
                                 {section.text}
                             </p>
                             <div className={clsx(
-                                "inline-block border-t pt-6",
+                                "inline-block border-t pt-4",
                                 isSunday ? "border-primary/30" : "border-primary/10"
                             )}>
                                 <p className={clsx(
@@ -174,10 +173,10 @@ function SermonSectionComponent({
 
         case 'scripture_quote':
             return (
-                <div className="py-4">
-                    {needsDivider && <div className="hairline-t opacity-30" />}
-                    <div className="my-8 py-8 text-center italic">
-                        <p className="text-xl text-foreground/70 serif-emphasis leading-loose mb-4 font-normal max-w-2xl mx-auto px-6">"{section.content}"</p>
+                <div className="border-0">
+                    {needsDivider && <div className="hairline-t opacity-20 mb-4" />}
+                    <div className="my-2 py-4 text-center italic">
+                        <p className="text-xl text-foreground/70 serif-emphasis leading-loose mb-3 font-normal max-w-2xl mx-auto px-6">"{section.content}"</p>
                         <span className="text-xs font-normal text-primary/40 uppercase tracking-[0.4em]">{section.reference}</span>
                     </div>
                 </div>

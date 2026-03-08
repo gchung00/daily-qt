@@ -35,36 +35,49 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
 
     return (
         <>
-            <section id="calendar" className="py-24 px-6 mt-20 hairline-t bg-black/[0.01]">
-                <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-                    <div className="lg:col-span-4 pt-12 flex flex-col justify-between h-full">
-                        <div>
-                            <span className="text-primary/40 text-[10px] font-medium tracking-[0.4em] uppercase mb-6 block">Archivo</span>
-                            <h2 className="text-4xl sm:text-5xl font-normal text-foreground mb-8 serif-emphasis leading-tight">지난 말씀 보기</h2>
-                            <p className="text-muted text-xl mb-12 leading-relaxed font-normal max-w-md">
-                                지나간 날의 말씀을 다시 묵상하며 은혜를 나누세요.
-                                날짜를 선택하면 해당 날짜의 설교로 이동합니다.
+            <section id="calendar" className="py-24 px-4 md:px-12 border-t border-card-border/30 bg-[#f7f5f0]">
+                <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+                    {/* LEFT COLUMN: Sidebar with vertical clocks */}
+                    <div className="lg:col-span-5 h-full flex flex-col pt-8">
+                        <div className="mb-20">
+                            <span className="text-[#a84435] text-[10px] font-bold tracking-[0.5em] uppercase mb-8 block opacity-80">Archivo</span>
+                            <h2 className="text-4xl sm:text-5xl font-normal text-gray-900 mb-8 serif-emphasis leading-tight tracking-tight">지난 말씀 보기</h2>
+                            <p className="text-gray-600 text-[15px] leading-[1.8] font-normal max-w-sm mb-12">
+                                지나간 날의 말씀을 다시 묵상하며 은혜를 나누세요. 날짜를 선택하면 해당 날짜의 설교로 이동합니다.
                             </p>
-                            <div className="flex flex-col gap-4 items-start mb-24">
-                                <Link href="/sermons" className="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-colors group">
-                                    <span className="text-sm tracking-widest uppercase">Ver todo (전체 목록)</span>
-                                    <span className="ml-3 group-hover:translate-x-1 transition-transform">→</span>
+                            <div className="flex flex-col gap-4 items-start">
+                                <Link href="/sermons" className="group flex items-center gap-3 text-xs font-bold text-[#a84435] tracking-widest uppercase hover:text-black transition-colors">
+                                    <span>전체 목록</span>
+                                    <span className="group-hover:translate-x-1 transition-transform">→</span>
                                 </Link>
-
-                                <Link href="/youtube" className="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-colors group">
-                                    <span className="text-sm tracking-widest uppercase">Sermones en Video (영상 설교)</span>
-                                    <span className="ml-3 group-hover:translate-x-1 transition-transform">→</span>
+                                <Link href="/youtube" className="group flex items-center gap-3 text-xs font-bold text-[#a84435] tracking-widest uppercase hover:text-black transition-colors">
+                                    <span>영상 설교</span>
+                                    <span className="group-hover:translate-x-1 transition-transform">→</span>
                                 </Link>
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-12 mt-auto">
-                            <AnalogClock timeZone="Atlantic/Canary" label="Las Palmas" />
-                            <AnalogClock timeZone="Asia/Seoul" label="Seoul" />
+                        {/* Vertical Clocks */}
+                        <div className="mt-auto space-y-12">
+                            <div className="flex items-center gap-6">
+                                <AnalogClock timeZone="Atlantic/Canary" label="" />
+                                <div>
+                                    <span className="block text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase mb-1">Las Palmas</span>
+                                    <span className="block font-serif italic text-gray-900">Canary Islands</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-6">
+                                <AnalogClock timeZone="Asia/Seoul" label="" />
+                                <div>
+                                    <span className="block text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase mb-1">Seoul</span>
+                                    <span className="block font-serif italic text-gray-900">South Korea</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="lg:col-span-8">
+                    {/* RIGHT COLUMN: Calendar */}
+                    <div className="lg:col-span-7">
                         <ClientCalendarWrapper sermonDates={sermonDates} />
                     </div>
                 </div>

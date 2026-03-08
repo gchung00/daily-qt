@@ -55,15 +55,15 @@ export function CalendarWidget({ sermonDates, selectedDate, onDateSelect }: Cale
             <div className="flex items-center justify-between mb-12">
                 <button
                     onClick={viewMode === 'month' ? prevMonth : prevYearPage}
-                    className="p-2 hover:bg-black/5 rounded-full transition-colors text-muted hover:text-foreground"
+                    className="p-2 hover:bg-black/5 rounded-full transition-colors text-gray-400 hover:text-gray-900"
                     aria-label="Previous"
                 >
-                    <ChevronLeft className="w-5 h-5" />
+                    <ChevronLeft className="w-5 h-5 pointer-events-none stroke-1" />
                 </button>
 
                 <h2
                     onClick={handleHeaderClick}
-                    className="font-normal text-2xl tracking-tighter cursor-pointer hover:text-primary transition-colors select-none serif-emphasis"
+                    className="font-normal text-2xl tracking-tight cursor-pointer hover:text-[#a84435] transition-colors select-none font-serif text-gray-900"
                 >
                     {viewMode === 'month'
                         ? format(currentMonth, 'yyyy년 M월', { locale: ko })
@@ -73,18 +73,18 @@ export function CalendarWidget({ sermonDates, selectedDate, onDateSelect }: Cale
 
                 <button
                     onClick={viewMode === 'month' ? nextMonth : nextYearPage}
-                    className="p-2 hover:bg-black/5 rounded-full transition-colors text-muted hover:text-foreground"
+                    className="p-2 hover:bg-black/5 rounded-full transition-colors text-gray-400 hover:text-gray-900"
                     aria-label="Next"
                 >
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight className="w-5 h-5 pointer-events-none stroke-1" />
                 </button>
             </div>
 
             {viewMode === 'month' ? (
-                <div className="border-y border-primary/20 transition-all">
-                    <div className="grid grid-cols-7 border-b border-primary/10">
+                <div className="border-y border-[#eae2d6] transition-all">
+                    <div className="grid grid-cols-7 border-b border-[#eae2d6]">
                         {weekDays.map(day => (
-                            <div key={day} className="text-[10px] font-medium text-muted/50 uppercase tracking-[0.2em] py-4 text-center">
+                            <div key={day} className="text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] py-4 text-center">
                                 {day}
                             </div>
                         ))}
@@ -108,23 +108,26 @@ export function CalendarWidget({ sermonDates, selectedDate, onDateSelect }: Cale
                                         if (hasSermon) onDateSelect(day);
                                     }}
                                     className={clsx(
-                                        "h-16 w-full flex flex-col items-center justify-center text-sm transition-all relative border-primary/5",
+                                        "h-12 w-full flex flex-col items-center justify-center text-xs transition-all relative border-[#eae2d6]",
                                         !isLastInRow && "border-r",
                                         idx < days.length - 7 && "border-b",
-                                        !isCurrentMonth && "bg-black/[0.01] text-muted/20",
-                                        isCurrentMonth && !hasSermon && "text-muted/40",
-                                        hasSermon && isCurrentMonth && "font-medium text-foreground hover:bg-primary/[0.03] cursor-pointer",
-                                        isSelected && "!bg-primary !text-white z-10",
-                                        isToday && !isSelected && "after:content-[''] after:absolute after:bottom-3 after:w-1 after:h-1 after:rounded-full after:bg-primary"
+                                        !isCurrentMonth && "bg-transparent text-gray-200",
+                                        isCurrentMonth && !hasSermon && "text-gray-400",
+                                        hasSermon && isCurrentMonth && "text-gray-900 hover:bg-black/5 cursor-pointer",
+                                        isSelected && "!text-[#a84435] font-bold z-10",
+                                        isToday && !isSelected && "after:content-[''] after:absolute after:bottom-1 after:w-1 after:h-1 after:rounded-full after:bg-gray-200"
                                     )}
                                 >
                                     <span className={clsx(
-                                        "text-lg",
+                                        "text-sm",
                                         hasSermon && "relative"
                                     )}>
                                         {format(day, 'd')}
                                         {hasSermon && !isSelected && (
-                                            <span className="absolute -top-1 -right-2 w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse"></span>
+                                            <span className="absolute -top-1 -right-1.5 w-1 h-1 rounded-full bg-[#a84435]"></span>
+                                        )}
+                                        {hasSermon && isSelected && (
+                                            <span className="absolute -top-1 -right-1.5 w-1 h-1 rounded-full bg-[#a84435] shadow-[0_0_4px_rgba(168,68,53,0.5)]"></span>
                                         )}
                                     </span>
                                 </button>

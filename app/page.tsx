@@ -17,7 +17,7 @@ export default async function Home() {
       <section className="pt-20 pb-12 px-4 md:px-12 relative">
         <div className="max-w-5xl mx-auto">
           {/* Elegant Content Wrapper - Subtle Hairline & Soft Shadow */}
-          <div className="sm:bg-white/[0.6] sm:backdrop-blur-sm sm:rounded-[3.5rem] sm:shadow-[0_8px_40px_-12px_rgba(0,0,0,0.03)] sm:hairline py-6 sm:p-12">
+          <div className="sm:bg-white/[0.6] sm:backdrop-blur-sm sm:rounded-3xl sm:shadow-[0_8px_40px_-12px_rgba(0,0,0,0.03)] sm:hairline py-6 sm:p-12">
             {latestSermon ? (
               <SermonView sermon={latestSermon} />
             ) : (

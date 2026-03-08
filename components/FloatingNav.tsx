@@ -44,7 +44,7 @@ export default function FloatingNav() {
 
                 {/* Center: Main Menu */}
                 <div className={cn(
-                    "flex flex-wrap items-center justify-center gap-1 sm:gap-2 p-1 rounded-full sm:p-0 transition-all duration-300",
+                    "flex flex-wrap items-center justify-center gap-1 sm:gap-2 p-1 rounded-2xl sm:p-0 transition-all duration-300",
                     pathname === "/profile" || pathname === "/youtube" ? "bg-white/90 backdrop-blur-md shadow-sm px-4 py-2" : "bg-white/50 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none"
                 )}>
                     <NavLink href="/" icon={<Home className="w-4 h-4 sm:w-5 sm:h-5" />} label="" />
@@ -57,7 +57,7 @@ export default function FloatingNav() {
 
                 {/* Right: Admin Lock Icon (Far Right) */}
                 <div className="flex justify-end">
-                    <Link href="/admin" className="p-2 rounded-full text-teal-900/30 hover:text-teal-900 hover:bg-teal-50 transition-all duration-300" title="Admin Access">
+                    <Link href="/admin" className="p-2 rounded-xl text-teal-900/30 hover:text-teal-900 hover:bg-teal-50 transition-all duration-300" title="Admin Access">
                         <Lock className="w-4 h-4" />
                     </Link>
                 </div>
@@ -74,7 +74,7 @@ function NavLink({ href, icon, label, highlight = false }: { href: string, icon:
         <Link
             href={href}
             className={cn(
-                "flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full transition-all duration-200 group",
+                "flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl transition-all duration-200 group",
                 isActive
                     ? "bg-primary text-white shadow-md"
                     : highlight

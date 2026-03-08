@@ -240,7 +240,7 @@ export default function ProfilePage() {
                 {/* Title Section (Introduction) */}
                 <div className="min-h-[80vh] flex flex-col justify-end md:justify-center items-start md:items-end w-full max-w-7xl mx-auto pb-20 pointer-events-none">
                     <div className="text-white text-left md:text-right drop-shadow-2xl animate-in fade-in slide-in-from-bottom-10 duration-1000 p-4 rounded-xl bg-transparent">
-                        <p className="text-primary-foreground/90 font-bold tracking-[0.3em] uppercase text-xl mb-4 pl-1 md:pl-0">Pastor Profile</p>
+                        <p className="text-primary-foreground/90 font-bold tracking-[0.3em] uppercase text-xl mb-4 pl-1 md:pl-0">Perfil del Pastor (목사님 소개)</p>
                         <h1 className="text-6xl md:text-8xl font-black font-serif leading-none tracking-tight mb-6">
                             정병성 <span className="opacity-70 font-sans font-thin tracking-normal text-5xl md:text-7xl">목사</span>
                         </h1>
@@ -254,7 +254,7 @@ export default function ProfilePage() {
                             key={section.id}
                             data-index={index}
                             ref={(el) => { observerRefs.current[index] = el; }}
-                            className="w-full max-w-xl lg:max-w-2xl bg-white/70 backdrop-blur-sm rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/40 transition-all duration-500 hover:bg-white/80 hover:shadow-[0_25px_60px_rgba(0,0,0,0.4)] md:mr-[5vw] lg:mr-[8vw]" // Margin Right aligns it slightly off-edge on desktop
+                            className="w-full max-w-xl lg:max-w-2xl bg-white/70 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/40 transition-all duration-500 hover:bg-white/80 hover:shadow-[0_25px_60px_rgba(0,0,0,0.4)] md:mr-[5vw] lg:mr-[8vw]" // Margin Right aligns it slightly off-edge on desktop
                         >
                             {section.text}
                         </div>

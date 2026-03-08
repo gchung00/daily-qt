@@ -59,7 +59,7 @@ function SermonSectionComponent({
                     )}>
                         {section.content}
                     </h1>
-                    <p className="text-muted/30 text-[10px] tracking-[0.5em] uppercase font-light">The Daily Devotion</p>
+                    <p className="text-muted/30 text-[10px] tracking-[0.5em] uppercase font-light">매일 큐티 (Devocional Diario)</p>
                 </div>
             );
 
@@ -70,7 +70,7 @@ function SermonSectionComponent({
                     <div className="flex items-center gap-4 mb-6">
                         <span className="font-serif text-3xl text-primary font-normal opacity-30 italic">I</span>
                         <h3 className="text-2xl font-normal text-foreground serif-emphasis">찬송가</h3>
-                        <span className="text-[10px] text-primary/60 uppercase tracking-[0.3em] font-light mt-1">Hymn</span>
+                        <span className="text-[10px] text-primary/60 uppercase tracking-[0.3em] font-light mt-1">Himno (찬송)</span>
                     </div>
 
                     <a
@@ -79,7 +79,7 @@ function SermonSectionComponent({
                         rel="noopener noreferrer"
                         className="block group"
                     >
-                        <div className="py-8 px-6 sm:px-10 rounded-[2rem] hairline bg-primary/[0.01] group-hover:bg-primary/[0.04] transition-all duration-300 flex items-center justify-between cursor-pointer border-transparent group-hover:border-primary/10">
+                        <div className="py-8 px-6 sm:px-10 rounded-3xl hairline bg-primary/[0.01] group-hover:bg-primary/[0.04] transition-all duration-300 flex items-center justify-between cursor-pointer border-transparent group-hover:border-primary/10">
                             <div className="flex items-center gap-8">
                                 <div className="w-12 h-12 rounded-full bg-white shadow-sm hairline flex items-center justify-center text-primary/60 group-hover:scale-110 group-hover:text-primary transition-all">
                                     <span className="font-serif font-light text-2xl">♪</span>
@@ -88,7 +88,7 @@ function SermonSectionComponent({
                                     <p className="font-normal text-xl text-foreground group-hover:text-primary transition-colors serif-emphasis">{section.content}</p>
                                     <div className="flex items-center gap-2 mt-2">
                                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                                        <p className="text-[10px] text-primary font-medium tracking-[0.2em] uppercase">Listen on YouTube</p>
+                                        <p className="text-[10px] text-primary font-medium tracking-[0.2em] uppercase">Escuchar en YouTube (유튜브에서 듣기)</p>
                                     </div>
                                 </div>
                             </div>
@@ -125,7 +125,7 @@ function SermonSectionComponent({
                 <div className="border-0">
                     {needsDivider && <div className="hairline-t opacity-20 mb-4" />}
                     <div className={clsx(
-                        isSunday ? "my-8 sm:my-12 py-12 px-8 sm:px-12 bg-[#f37021]/5 sm:rounded-[3.5rem] shadow-sm hairline" : "my-2 py-4 px-6 relative text-center"
+                        isSunday ? "my-8 sm:my-12 py-12 px-8 sm:px-12 bg-[#f37021]/5 sm:rounded-3xl shadow-sm hairline" : "my-2 py-4 px-6 relative text-center"
                     )}>
                         {/* Decorative element for Sunday */}
                         {isSunday && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-primary/20 rounded-full mt-6"></div>}
@@ -196,7 +196,7 @@ function SermonSectionComponent({
                     <div className="flex items-center gap-4 mb-6 mt-12">
                         <span className="font-serif text-3xl text-primary font-normal opacity-30">0</span>
                         <h3 className="text-2xl font-normal text-foreground serif-emphasis">{section.content}</h3>
-                        <span className="text-[10px] text-primary/60 uppercase tracking-[0.3em] font-normal mt-0.5">Confession</span>
+                        <span className="text-[10px] text-primary/60 uppercase tracking-[0.3em] font-normal mt-0.5">Confesión de Fe</span>
                     </div>
                 );
             }

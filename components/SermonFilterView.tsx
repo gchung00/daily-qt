@@ -64,7 +64,7 @@ export default function SermonFilterView({ }: SermonFilterViewProps) {
                 <div>
                     <h2 className="text-2xl font-serif font-bold text-primary mb-6 flex items-center gap-3">
                         <span className="w-2 h-8 bg-primary rounded-full"></span>
-                        구약 (Old Testament)
+                        구약 (Antiguo Testamento)
                     </h2>
                     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-3">
                         {BIBLE_BOOKS_DATA.filter(b => b.testament === 'OT').map(book => {
@@ -95,7 +95,7 @@ export default function SermonFilterView({ }: SermonFilterViewProps) {
                 <div>
                     <h2 className="text-2xl font-serif font-bold text-primary mb-6 flex items-center gap-3">
                         <span className="w-2 h-8 bg-primary rounded-full"></span>
-                        신약 (New Testament)
+                        신약 (Nuevo Testamento)
                     </h2>
                     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-3">
                         {BIBLE_BOOKS_DATA.filter(b => b.testament === 'NT').map(book => {
@@ -132,7 +132,7 @@ export default function SermonFilterView({ }: SermonFilterViewProps) {
                             }
                         `}
                     >
-                        기타 설교
+                        Otros sermones (기타 설교)
                     </button>
                 </div>
             </div>
@@ -152,14 +152,14 @@ export default function SermonFilterView({ }: SermonFilterViewProps) {
                                 onClick={() => setSelectedBookId(null)}
                                 className="text-sm text-gray-500 hover:text-primary underline underline-offset-4"
                             >
-                                선택 취소 (모두 접기)
+                                Cancelar selección (선택 취소)
                             </button>
                         </div>
 
                         {isLoading ? (
                             <div className="flex flex-col items-center justify-center py-20 text-primary/60">
                                 <Loader2 className="w-10 h-10 animate-spin mb-4" />
-                                <p className="font-bold">말씀을 불러오는 중입니다...</p>
+                                <p className="font-bold">Cargando sermones (말씀을 불러오는 중)...</p>
                             </div>
                         ) : currentSermons.length > 0 ? (
                             <div className="grid gap-4">
@@ -185,7 +185,7 @@ export default function SermonFilterView({ }: SermonFilterViewProps) {
                             </div>
                         ) : (
                             <div className="text-center py-20 bg-gray-50 rounded-xl">
-                                <p className="text-gray-500">등록된 설교가 없습니다.</p>
+                                <p className="text-gray-500">No hay sermones registrados. (등록된 설교가 없습니다.)</p>
                             </div>
                         )}
                     </div>

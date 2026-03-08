@@ -37,9 +37,9 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
         <>
             <section id="calendar" className="py-24 px-6 mt-20 hairline-t bg-black/[0.01]">
                 <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-                    <div className="lg:col-span-5 pt-12 flex flex-col justify-between h-full">
+                    <div className="lg:col-span-4 pt-12 flex flex-col justify-between h-full">
                         <div>
-                            <span className="text-primary/40 text-[10px] font-medium tracking-[0.4em] uppercase mb-6 block">Archive</span>
+                            <span className="text-primary/40 text-[10px] font-medium tracking-[0.4em] uppercase mb-6 block">Archivo</span>
                             <h2 className="text-4xl sm:text-5xl font-normal text-foreground mb-8 serif-emphasis leading-tight">지난 말씀 보기</h2>
                             <p className="text-muted text-xl mb-12 leading-relaxed font-normal max-w-md">
                                 지나간 날의 말씀을 다시 묵상하며 은혜를 나누세요.
@@ -47,12 +47,12 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
                             </p>
                             <div className="flex flex-col gap-4 items-start mb-24">
                                 <Link href="/sermons" className="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-colors group">
-                                    <span className="text-sm tracking-widest uppercase">전체 목록 보기</span>
+                                    <span className="text-sm tracking-widest uppercase">Ver todo (전체 목록)</span>
                                     <span className="ml-3 group-hover:translate-x-1 transition-transform">→</span>
                                 </Link>
 
                                 <Link href="/youtube" className="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-colors group">
-                                    <span className="text-sm tracking-widest uppercase">영상 설교 보기</span>
+                                    <span className="text-sm tracking-widest uppercase">Sermones en Video (영상 설교)</span>
                                     <span className="ml-3 group-hover:translate-x-1 transition-transform">→</span>
                                 </Link>
                             </div>
@@ -64,22 +64,21 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
                         </div>
                     </div>
 
-                    <div className="lg:col-span-7">
+                    <div className="lg:col-span-8">
                         <ClientCalendarWrapper sermonDates={sermonDates} />
                     </div>
                 </div>
             </section>
 
             {/* 3. PROFILE SECTION (Parallax + Modern White Card) */}
-            < section
+            <section
                 className="pt-[75vh] pb-32 px-6 relative bg-fixed bg-cover bg-center bg-no-repeat border-t border-card-border"
                 style={{
                     backgroundImage: 'url(/profile_background.png)',
-                }
-                }
+                }}
             >
                 <div className="max-w-5xl mx-auto relative z-10 flex flex-col gap-24">
-                    <div className="bg-white/95 backdrop-blur-sm p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/50">
+                    <div className="bg-white/95 backdrop-blur-sm p-8 md:p-12 rounded-3xl shadow-2xl border border-white/50">
                         <div className="flex flex-col md:flex-row gap-12 items-center md:items-start">
                             <div className="shrink-0">
                                 <Link href="/profile" className="block w-48 md:w-64 relative cursor-pointer group/image">
@@ -104,7 +103,7 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
                                 <Link href="/profile" className="block group/profile cursor-pointer">
                                     <div className="mb-6">
                                         <h2 className="text-3xl font-serif font-bold text-gray-900 mb-2 group-hover/profile:text-primary transition-colors">정병성 목사</h2>
-                                        <p className="text-primary font-bold tracking-wide uppercase text-sm">Pastor Profile</p>
+                                        <p className="text-primary font-bold tracking-wide uppercase text-sm">Perfil del Pastor</p>
                                     </div>
 
                                     <div className="prose prose-stone max-w-none text-gray-600 leading-relaxed font-serif mb-8 text-lg">
@@ -121,7 +120,7 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
                                     </div>
 
                                     <div className="inline-flex items-center gap-3 px-6 py-3 bg-gray-50 border border-gray-200 rounded-full text-gray-900 font-bold transition-all duration-300 group-hover/profile:bg-primary group-hover/profile:text-white group-hover/profile:border-primary group-hover/profile:pl-8 group-hover/profile:shadow-lg">
-                                        <span>더 자세한 소개 보기</span>
+                                        <span>Leer más (자세히 보기)</span>
                                         <span className="text-xl leading-none mb-0.5">→</span>
                                     </div>
                                 </Link>

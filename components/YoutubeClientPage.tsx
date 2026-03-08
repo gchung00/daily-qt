@@ -77,7 +77,7 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
                 <div className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-160px)] min-h-[600px]">
 
                     {/* LEFT: Main Player (Flex Grow) */}
-                    <div className="lg:flex-[3] flex flex-col h-full bg-white rounded-2xl shadow-sm overflow-hidden">
+                    <div className="lg:flex-[3] flex flex-col h-full bg-white rounded-xl shadow-sm overflow-hidden">
                         <div className="w-full bg-black flex-shrink-0 relative" style={{ aspectRatio: '16/9' }}>
                             {currentVideo?.type === 'youtube' ? (
                                 <iframe
@@ -122,10 +122,10 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
                     </div>
 
                     {/* RIGHT: Playlist (Flex 1, constrained height) */}
-                    <div className="lg:flex-1 h-full flex flex-col min-w-[320px] bg-white rounded-2xl shadow-sm overflow-hidden">
+                    <div className="lg:flex-1 h-full flex flex-col min-w-[320px] bg-white rounded-xl shadow-sm overflow-hidden">
                         {/* List Header */}
                         <div className="p-4 flex items-center justify-between bg-gray-50/50">
-                            <h3 className="font-bold text-lg text-gray-900">재생 목록</h3>
+                            <h3 className="font-bold text-lg text-gray-900">Lista de reproducción (재생 목록)</h3>
                             <button
                                 onClick={() => setAutoplay(!autoplay)}
                                 className={cn(
@@ -134,7 +134,7 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
                                 )}
                             >
                                 {autoplay ? <Play className="w-3 h-3 fill-current" /> : <Pause className="w-3 h-3 fill-current" />}
-                                Auto Next {autoplay ? 'ON' : 'OFF'}
+                                Auto Siguiente {autoplay ? 'ON' : 'OFF'}
                             </button>
                         </div>
 
@@ -147,7 +147,7 @@ export default function YoutubeClientPage({ videos }: YoutubeClientPageProps) {
                                         key={video.id + idx}
                                         onClick={() => handleVideoClick(idx)}
                                         className={cn(
-                                            "flex gap-3 p-2 rounded-xl cursor-pointer transition-all group",
+                                            "flex gap-3 p-2 rounded-lg cursor-pointer transition-all group",
                                             isPlaying ? "bg-red-50 ring-1 ring-red-100" : "hover:bg-gray-100"
                                         )}
                                     >

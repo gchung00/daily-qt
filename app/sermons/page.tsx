@@ -13,7 +13,7 @@ export default async function SermonsListPage() {
                     <div className="mb-6">
                         <Link href="/" className="inline-flex items-center text-primary/80 hover:text-primary font-bold transition-colors text-sm uppercase tracking-wider group">
                             <ArrowLeft className="mr-2 w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                            Main Page
+                            Inicio (메인 페이지)
                         </Link>
                     </div>
                     <h1 className="text-4xl font-serif font-bold text-foreground mb-2">성경별 말씀 찾기</h1>

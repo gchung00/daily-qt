@@ -81,8 +81,8 @@ export function CalendarWidget({ sermonDates, selectedDate, onDateSelect }: Cale
             </div>
 
             {viewMode === 'month' ? (
-                <div className="hairline rounded-3xl overflow-hidden bg-white/40 shadow-sm transition-all hover:bg-white/60">
-                    <div className="grid grid-cols-7 border-b border-primary/5">
+                <div className="border-y border-primary/20 transition-all">
+                    <div className="grid grid-cols-7 border-b border-primary/10">
                         {weekDays.map(day => (
                             <div key={day} className="text-[10px] font-medium text-muted/50 uppercase tracking-[0.2em] py-4 text-center">
                                 {day}
@@ -133,7 +133,7 @@ export function CalendarWidget({ sermonDates, selectedDate, onDateSelect }: Cale
                     </div>
                 </div>
             ) : (
-                <div className="grid grid-cols-3 gap-1 hairline rounded-3xl overflow-hidden">
+                <div className="grid grid-cols-3 gap-0 border-y border-primary/20">
                     {Array.from({ length: 12 }, (_, i) => yearRangeStart + i).map(year => {
                         const hasSermonInYear = sermonDates.some(d => d.startsWith(`${year}-`));
                         const isCurrentYear = year === currentMonth.getFullYear();

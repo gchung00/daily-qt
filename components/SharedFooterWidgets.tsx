@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Mail, MapPin, User, Play } from 'lucide-react';
 import ClientCalendarWrapper from '@/components/ClientCalendarWrapper';
+import { AnalogClock } from '@/components/AnalogClock';
 import { useEffect, useRef, useState } from 'react';
 
 interface SharedFooterWidgetsProps {
@@ -36,32 +37,35 @@ export default function SharedFooterWidgets({ sermonDates }: SharedFooterWidgets
         <>
             <section id="calendar" className="py-24 px-6 mt-20 hairline-t bg-black/[0.01]">
                 <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-                    <div className="lg:col-span-5 pt-12">
-                        <span className="text-primary/40 text-[10px] font-medium tracking-[0.4em] uppercase mb-6 block">Archive</span>
-                        <h2 className="text-4xl sm:text-5xl font-normal text-foreground mb-8 serif-emphasis leading-tight">지난 말씀 보기</h2>
-                        <p className="text-muted text-xl mb-12 leading-relaxed font-normal max-w-md">
-                            지나간 날의 말씀을 다시 묵상하며 은혜를 나누세요.
-                            날짜를 선택하면 해당 날짜의 설교로 이동합니다.
-                        </p>
-                        <div className="flex flex-col gap-4 items-start">
-                            <Link href="/sermons" className="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-colors group">
-                                <span className="text-sm tracking-widest uppercase">전체 목록 보기</span>
-                                <span className="ml-3 group-hover:translate-x-1 transition-transform">→</span>
-                            </Link>
+                    <div className="lg:col-span-5 pt-12 flex flex-col justify-between h-full">
+                        <div>
+                            <span className="text-primary/40 text-[10px] font-medium tracking-[0.4em] uppercase mb-6 block">Archive</span>
+                            <h2 className="text-4xl sm:text-5xl font-normal text-foreground mb-8 serif-emphasis leading-tight">지난 말씀 보기</h2>
+                            <p className="text-muted text-xl mb-12 leading-relaxed font-normal max-w-md">
+                                지나간 날의 말씀을 다시 묵상하며 은혜를 나누세요.
+                                날짜를 선택하면 해당 날짜의 설교로 이동합니다.
+                            </p>
+                            <div className="flex flex-col gap-4 items-start mb-24">
+                                <Link href="/sermons" className="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-colors group">
+                                    <span className="text-sm tracking-widest uppercase">전체 목록 보기</span>
+                                    <span className="ml-3 group-hover:translate-x-1 transition-transform">→</span>
+                                </Link>
 
-                            <Link href="/youtube" className="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-colors group">
-                                <span className="text-sm tracking-widest uppercase">영상 설교 보기</span>
-                                <span className="ml-3 group-hover:translate-x-1 transition-transform">→</span>
-                            </Link>
+                                <Link href="/youtube" className="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-colors group">
+                                    <span className="text-sm tracking-widest uppercase">영상 설교 보기</span>
+                                    <span className="ml-3 group-hover:translate-x-1 transition-transform">→</span>
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-12 mt-auto">
+                            <AnalogClock timeZone="Atlantic/Canary" label="Las Palmas" />
+                            <AnalogClock timeZone="Asia/Seoul" label="Seoul" />
                         </div>
                     </div>
 
                     <div className="lg:col-span-7">
-                        <div className="relative">
-                            {/* Subtle Decorative element behind calendar */}
-                            <div className="absolute -inset-4 bg-primary/[0.03] rounded-[3rem] blur-2xl -z-10"></div>
-                            <ClientCalendarWrapper sermonDates={sermonDates} />
-                        </div>
+                        <ClientCalendarWrapper sermonDates={sermonDates} />
                     </div>
                 </div>
             </section>

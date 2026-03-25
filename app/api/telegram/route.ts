@@ -141,10 +141,22 @@ export async function POST(request: Request) {
             let isUsingDraft = false;
 
             if (text.length < 200 && chatId) {
-                const draft = await DraftStorage.getDraft(chatId);
+                let draft = await DraftStorage.getDraft(chatId);
+                
+                // Vercel Blob list() is eventually consistent. Retry once if draft is not found immediately.
+                if (!draft) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    draft = await DraftStorage.getDraft(chatId);
+                }
+
                 if (draft) {
                     contentToSave = draft;
                     isUsingDraft = true;
+                } else if (text.trim().length <= 50) {
+                    // Draft not found, but input is short (likely just the date). 
+                    // Tell user to wait instead of falsely trying to save just the date and triggering a conflict.
+                    await sendTelegramMessage(chatId, `⏳ **저장소 동기화 중입니다.**\n방금 전송하신 본문이 아직 반영되지 않았을 수 있습니다. 2~3초 뒤에 **날짜**만 다시 입력해주세요.`);
+                    return NextResponse.json({ status: 'ok' });
                 }
             }
 
@@ -163,7 +175,14 @@ export async function POST(request: Request) {
                 // Conflict -> Try Append
                 if (chatId) {
                     if (isUsingDraft) {
-                        const existingContent = await SermonStorage.getSermon(date);
+                        let existingContent = await SermonStorage.getSermon(date);
+                        
+                        // Retry for eventual consistency if sermon was just saved (e.g. from previous chunk in a split message)
+                        if (!existingContent) {
+                            await new Promise(resolve => setTimeout(resolve, 1500));
+                            existingContent = await SermonStorage.getSermon(date);
+                        }
+
                         if (existingContent) {
                             const combinedContent = existingContent + "\n\n" + contentToSave;
                             await SermonStorage.saveSermon(date, combinedContent, true);
